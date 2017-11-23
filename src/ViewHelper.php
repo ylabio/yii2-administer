@@ -4,10 +4,15 @@ namespace ylab\administer;
 
 use yii\helpers\Html;
 
+/**
+ * Helper class for get additional page elements.
+ */
 class ViewHelper
 {
     /**
-     * @param $action
+     * Create breadcrumbs items config.
+     *
+     * @param string $action
      * @param null|string $url
      * @param null|string $name
      * @param null|int $id
@@ -39,6 +44,8 @@ class ViewHelper
     }
 
     /**
+     * Create actions buttons.
+     *
      * @param string $action
      * @param string $url
      * @param null|int $id
@@ -74,6 +81,8 @@ class ViewHelper
     }
 
     /**
+     * Create button referring to index page.
+     *
      * @param string$url
      * @return string
      */
@@ -87,6 +96,8 @@ class ViewHelper
     }
 
     /**
+     * Create button referring to create page.
+     *
      * @param string $url
      * @return string
      */
@@ -100,6 +111,8 @@ class ViewHelper
     }
 
     /**
+     * Create button referring to update page.
+     *
      * @param string $url
      * @param int $id
      * @return string
@@ -114,6 +127,8 @@ class ViewHelper
     }
 
     /**
+     * Create button referring to view page.
+     *
      * @param string $url
      * @param int $id
      * @return string
@@ -128,6 +143,8 @@ class ViewHelper
     }
 
     /**
+     * Create button referring to delete page.
+     *
      * @param string $url
      * @param int $id
      * @return string

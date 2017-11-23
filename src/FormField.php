@@ -7,7 +7,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use yii\widgets\ActiveField;
-
+/**
+ * Class FormField for creating form fields based on model attribute type.
+ */
 class FormField
 {
     /**
@@ -32,6 +34,8 @@ class FormField
     const TYPE_STRING = 'string';
 
     /**
+     * Create form field based on one of types.
+     *
      * @param ActiveField $field
      * @param string $type
      * @param array $options

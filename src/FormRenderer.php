@@ -7,14 +7,33 @@ use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+/**
+ * Class for form rendering.
+ */
 class FormRenderer
 {
     /**
+     * Array of attributes for form rendering.
+     * Example:
+     * ```
+     * [
+     *     'name',
+     *     'avatar' => [
+     *         'type' => 'image',
+     *     ],
+     *     'doc' => [
+     *         'type' => 'file',
+     *     ],
+     * ]
+     * ```
+     *
      * @var array
      */
     public $attributesInputs = [];
 
     /**
+     * Render form and return it as a string.
+     *
      * @param ActiveRecord $model
      * @param array $config
      * @return string
@@ -42,6 +61,8 @@ class FormRenderer
     }
 
     /**
+     * Merge user config and default config based on `rules()` method.
+     *
      * @param array $defaultConfig
      * @return array
      * @throws InvalidConfigException

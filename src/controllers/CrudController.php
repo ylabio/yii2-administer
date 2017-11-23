@@ -15,6 +15,8 @@ use ylab\administer\Module;
 use ylab\administer\ViewHelper;
 
 /**
+ * Controller for all CRUD actions.
+ *
  * {@inheritdoc}
  * @property Module $module
  */
@@ -25,6 +27,17 @@ class CrudController extends Controller
      */
     public $layout = '@ylab/administer/views/layout';
     /**
+     * Model class config.
+     * Example:
+     * ```
+     * [
+     *     'class' => Post::class,
+     *     'url' => 'posts',
+     *     'labels' => ['Посты', 'Пост', 'Поста'],
+     *     'menuIcon' => 'newsletter',
+     * ],
+     * ```
+     *
      * @var array
      */
     public $modelConfig;
@@ -88,6 +101,8 @@ class CrudController extends Controller
     }
 
     /**
+     * Show default module page.
+     *
      * @return string
      */
     public function actionDefault()
@@ -97,6 +112,7 @@ class CrudController extends Controller
 
     /**
      * Lists all models.
+     *
      * @param string $modelClass
      * @return string
      */
@@ -116,6 +132,7 @@ class CrudController extends Controller
 
     /**
      * Displays a single model.
+     *
      * @param string $modelClass
      * @param int $id
      * @return string
@@ -141,6 +158,7 @@ class CrudController extends Controller
     /**
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     *
      * @param string $modelClass
      * @return string|Response
      */
@@ -171,6 +189,7 @@ class CrudController extends Controller
     /**
      * Updates an existing model.
      * If update is successful, the browser will be redirected to the 'view' page.
+     *
      * @param string $modelClass
      * @param int $id
      * @return string|Response
@@ -202,6 +221,7 @@ class CrudController extends Controller
     /**
      * Deletes an existing model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
      * @param string $modelClass
      * @param int $id
      * @return Response
@@ -219,6 +239,7 @@ class CrudController extends Controller
     /**
      * Finds the model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
+     *
      * @param string $modelClass
      * @param int $id
      * @return ActiveRecord the loaded model
@@ -234,6 +255,8 @@ class CrudController extends Controller
     }
 
     /**
+     * Get all model columns for shows in GridView in actionIndex.
+     *
      * @param ActiveRecord $model
      * @return array
      */

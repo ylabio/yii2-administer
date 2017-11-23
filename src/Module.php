@@ -48,6 +48,8 @@ class Module extends \yii\base\Module
     }
 
     /**
+     * Get menu items for `Menu` widget.
+     *
      * @return array
      */
     public function getMenuItems()
@@ -64,6 +66,8 @@ class Module extends \yii\base\Module
     }
 
     /**
+     * Make config valid, set unspecified fields to default values.
+     *
      * @throws InvalidConfigException
      */
     protected function normalizeModelsConfig()
