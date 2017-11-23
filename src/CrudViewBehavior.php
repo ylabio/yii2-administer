@@ -71,9 +71,9 @@ class CrudViewBehavior extends Behavior
      * @return string
      * @throws \yii\base\InvalidConfigException
      */
-    public function render()
+    public function renderForm()
     {
-        return $this->formRenderer->render($this->owner, $this->getFieldsConfig());
+        return $this->formRenderer->renderForm($this->owner, $this->getFieldsConfig());
     }
 
     /**
@@ -136,7 +136,7 @@ class CrudViewBehavior extends Behavior
     /**
      * Create config for scope of attributes.
      *
-     * @param $type
+     * @param string $type
      * @param array $attributes
      * @return array
      */

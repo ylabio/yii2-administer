@@ -1,22 +1,25 @@
 <?php
 /**
  * @var View $this
+ * @var ActiveRecord $model
  * @var string $title
  * @var array $breadcrumbs
  * @var array $buttons
- * @var string $form
+ * @var array $columns
  */
 
+use yii\db\ActiveRecord;
 use yii\web\View;
+use yii\widgets\DetailView;
 
 $this->title = $title;
 $this->params['breadcrumbs'] = $breadcrumbs;
 ?>
 
-<div class="administer-update">
+<div class="administer-view">
     <p class="clear">
-        <?php if (isset($buttons['view'])) : ?>
-            <?= $buttons['view'] ?>
+        <?php if (isset($buttons['update'])) : ?>
+            <?= $buttons['update'] ?>
         <?php endif; ?>
         <?php if (isset($buttons['delete'])) : ?>
             <?= $buttons['delete'] ?>
@@ -28,7 +31,9 @@ $this->params['breadcrumbs'] = $breadcrumbs;
             <?= $buttons['create'] ?>
         <?php endif; ?>
     </p>
-    <div class="administer-form">
-        <?= $form ?>
+    <div class="box box-primary">
+        <?= DetailView::widget([
+            'model' => $model,
+        ]) ?>
     </div>
 </div>
