@@ -7,7 +7,6 @@
  * @var string $form
  */
 
-use yii\helpers\Html;
 use yii\web\View;
 
 $this->title = $title;
@@ -15,12 +14,11 @@ $this->params['breadcrumbs'] = $breadcrumbs;
 ?>
 
 <div class="administer-create">
-    <h1><?= Html::encode($title) ?></h1>
-    <div class="administer-buttons">
-        <?php if (isset($buttons['list'])) : ?>
-            <?= $buttons['list'] ?>
+    <p class="clear">
+        <?php if (isset($buttons['index'])) : ?>
+            <?= $buttons['index'] ?>
         <?php endif; ?>
-    </div>
+    </p>
     <div class="administer-form">
         <?= $form ?>
     </div>

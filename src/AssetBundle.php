@@ -2,6 +2,8 @@
 
 namespace ylab\administer;
 
+use dmstr\web\AdminLteAsset;
+
 /**
  * @inheritdoc
  */
@@ -16,5 +18,17 @@ class AssetBundle extends \yii\web\AssetBundle
      */
     public $js = [
         'js/image-preview.js',
+    ];
+    /**
+     * @inheritdoc
+     */
+    public $css = [
+        'css/administer.css',
+    ];
+    /**
+     * @inheritdoc
+     */
+    public $depends = [
+        AdminLteAsset::class,
     ];
 }
