@@ -8,9 +8,26 @@ use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use yii\widgets\ActiveForm;
 
+/**
+ * Class for form rendering
+ */
 class FormRenderer
 {
     /**
+     * Array of attributes for form rendering.
+     * Example:
+     * ```
+     * [
+     *     'name',
+     *     'avatar' => [
+     *         'type' => 'image',
+     *     ],
+     *     'doc' => [
+     *         'type' => 'file',
+     *     ],
+     * ]
+     * ```
+     *
      * @var array
      */
     public $attributesInputs = [];
@@ -20,6 +37,8 @@ class FormRenderer
     public $layout = '@ylab/administer/views/layout.php';
 
     /**
+     * Render form.
+     *
      * @param ActiveRecord $model
      * @param array $config
      * @return string
@@ -41,6 +60,8 @@ class FormRenderer
     }
 
     /**
+     * Merge user config and default config based on `rules()` method.
+     *
      * @param array $defaultConfig
      * @return array
      * @throws InvalidConfigException
@@ -66,6 +87,8 @@ class FormRenderer
     }
 
     /**
+     * Render form.
+     *
      * @param ActiveRecord $model
      * @param array $fields
      * @return string
@@ -86,6 +109,8 @@ class FormRenderer
     }
 
     /**
+     * Get view file for concrete action.
+     *
      * @param ActiveRecord $model
      * @return string
      */
@@ -95,6 +120,8 @@ class FormRenderer
     }
 
     /**
+     * Create title for page.
+     *
      * @param ActiveRecord $model
      * @return string
      */
@@ -108,6 +135,8 @@ class FormRenderer
     }
 
     /**
+     * Create breadcrumbs for page.
+     *
      * @param ActiveRecord $model
      * @return array
      */
@@ -126,6 +155,8 @@ class FormRenderer
     }
 
     /**
+     * Create buttons for page.
+     *
      * @param ActiveRecord $model
      * @return array
      */

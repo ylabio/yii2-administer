@@ -12,6 +12,30 @@ use yii\validators\ImageValidator;
 use yii\validators\NumberValidator;
 
 /**
+ * Behavior for add to ActiveRecord models possibility to use in Administer CRUD module.
+ * Usage:
+ * ```
+ * public function behaviors()
+ * {
+ *     return [
+ *         'crudView' => [
+ *             'class' => CrudViewBehavior::class,
+ *             'formRenderer' => [
+ *                  'attributesInputs' => [
+ *                      'name',
+ *                      'avatar' => [
+ *                          'type' => 'image',
+ *                      ],
+ *                      'doc' => [
+ *                          'type' => 'file',
+ *                      ],
+ *                  ],
+ *              ],
+ *         ],
+ *     ];
+ * }
+ * ```
+ *
  * {@inheritdoc}
  * @property ActiveRecord $owner
  */
@@ -42,6 +66,8 @@ class CrudViewBehavior extends Behavior
     }
 
     /**
+     * Render form and return it as string.
+     *
      * @return string
      * @throws \yii\base\InvalidConfigException
      */
@@ -50,6 +76,9 @@ class CrudViewBehavior extends Behavior
         return $this->formRenderer->render($this->owner, $this->getFieldsConfig());
     }
 
+    /**
+     * Register needed i18n files
+     */
     protected function registerTranslations()
     {
         if (!isset(\Yii::$app->i18n->translations['ylab/administer'])
@@ -67,7 +96,9 @@ class CrudViewBehavior extends Behavior
     }
 
     /**
-     * return array
+     * Get fields config based on `rules()` model method.
+     *
+     * @return array
      */
     protected function getFieldsConfig()
     {
@@ -103,6 +134,8 @@ class CrudViewBehavior extends Behavior
     }
 
     /**
+     * Create config for scope of attributes.
+     *
      * @param $type
      * @param array $attributes
      * @return array
