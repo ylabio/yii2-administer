@@ -12,15 +12,9 @@ use ylab\administer\buttons\AbstractButton;
 
 $this->title = $title;
 $this->params['breadcrumbs'] = $breadcrumbs;
+$this->params['buttons'] = $buttons;
 ?>
 
-<div class="administer-create">
-    <p class="clear">
-        <?php foreach ($buttons as $button) : ?>
-            <?= $button->render() ?>
-        <?php endforeach; ?>
-    </p>
-    <div class="administer-form">
-        <?= $form ?>
-    </div>
+<div class="administer-form">
+    <?= $form ?>
 </div>

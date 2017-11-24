@@ -10,6 +10,7 @@ use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\Breadcrumbs;
 use ylab\administer\AssetBundle;
+use ylab\administer\widgets\ButtonsWidget;
 
 AssetBundle::register($this);
 $title = $this->title === null ? \Yii::$app->name : $this->title . ' | ' . \Yii::$app->name;
@@ -68,7 +69,14 @@ $title = $this->title === null ? \Yii::$app->name : $this->title . ' | ' . \Yii:
 
         <section class="content">
             <?= Alert::widget() ?>
-            <?= $content ?>
+            <div class="administer">
+                <?php if (isset($this->params['buttons'])) : ?>
+                    <p class="clear">
+                        <?= ButtonsWidget::widget(['buttons' => $this->params['buttons']]) ?>
+                    </p>
+                <?php endif; ?>
+                <?= $content ?>
+            </div>
         </section>
     </div>
 

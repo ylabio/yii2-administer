@@ -9,18 +9,13 @@
 
 use yii\web\View;
 use ylab\administer\buttons\AbstractButton;
+use ylab\administer\widgets\ButtonsWidget;
 
 $this->title = $title;
 $this->params['breadcrumbs'] = $breadcrumbs;
+$this->params['buttons'] = $buttons;
 ?>
 
-<div class="administer-update">
-    <p class="clear">
-        <?php foreach ($buttons as $button) : ?>
-            <?= $button->render() ?>
-        <?php endforeach; ?>
-    </p>
-    <div class="administer-form">
-        <?= $form ?>
-    </div>
+<div class="administer-form">
+    <?= $form ?>
 </div>

@@ -19,32 +19,26 @@ use ylab\administer\buttons\AbstractButton;
 
 $this->title = $title;
 $this->params['breadcrumbs'] = $breadcrumbs;
+$this->params['buttons'] = $buttons;
 ?>
 
-<div class="administer-index">
-    <p class="clear">
-        <?php foreach ($buttons as $button) : ?>
-            <?= $button->render() ?>
-        <?php endforeach; ?>
-    </p>
-    <div class="box box-primary">
-        <?= GridView::widget([
-            'dataProvider' => $dataProvider,
-            'layout' => "{items}\n<div class='row'>{summary}{pager}</div>",
-            'columns' => ArrayHelper::merge(
-                [['class' => SerialColumn::class]],
-                $columns,
-                [[
-                    'class' => ActionColumn::class,
-                    'urlCreator' => function ($action, ActiveRecord $model) {
-                        return [
-                            $action,
-                            'modelClass' => $this->context->modelConfig['url'],
-                            'id' => $model->getPrimaryKey(),
-                        ];
-                    }
-                ]]
-            ),
-        ]) ?>
-    </div>
+<div class="administer-index box box-primary">
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'layout' => "{items}\n<div class='row'>{summary}{pager}</div>",
+        'columns' => ArrayHelper::merge(
+            [['class' => SerialColumn::class]],
+            $columns,
+            [[
+                'class' => ActionColumn::class,
+                'urlCreator' => function ($action, ActiveRecord $model) {
+                    return [
+                        $action,
+                        'modelClass' => $this->context->modelConfig['url'],
+                        'id' => $model->getPrimaryKey(),
+                    ];
+                }
+            ]]
+        ),
+    ]) ?>
 </div>

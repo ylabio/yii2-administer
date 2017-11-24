@@ -15,17 +15,11 @@ use ylab\administer\buttons\AbstractButton;
 
 $this->title = $title;
 $this->params['breadcrumbs'] = $breadcrumbs;
+$this->params['buttons'] = $buttons;
 ?>
 
-<div class="administer-view">
-    <p class="clear">
-        <?php foreach ($buttons as $button) : ?>
-            <?= $button->render() ?>
-        <?php endforeach; ?>
-    </p>
-    <div class="box box-primary">
-        <?= DetailView::widget([
-            'model' => $model,
-        ]) ?>
-    </div>
+<div class="administer-view box box-primary">
+    <?= DetailView::widget([
+        'model' => $model,
+    ]) ?>
 </div>

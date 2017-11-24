@@ -10,6 +10,8 @@ use yii\validators\EmailValidator;
 use yii\validators\FileValidator;
 use yii\validators\ImageValidator;
 use yii\validators\NumberValidator;
+use ylab\administer\helpers\BreadcrumbsHelper;
+use ylab\administer\helpers\ButtonsHelper;
 
 /**
  * Behavior for add to ActiveRecord models possibility to use in Administer CRUD module.
@@ -59,9 +61,13 @@ class CrudViewBehavior extends Behavior
     public $buttonsConfig = [];
 
     /**
-     * @var ViewHelper
+     * @var ButtonsHelper
      */
-    protected $viewHelper;
+    protected $buttonsHelper;
+    /**
+     * @var BreadcrumbsHelper
+     */
+    protected $breadcrumbsHelper;
 
     /**
      * @inheritdoc
@@ -70,7 +76,8 @@ class CrudViewBehavior extends Behavior
     {
         parent::attach($owner);
         $this->registerTranslations();
-        $this->viewHelper = \Yii::createObject(ViewHelper::class);
+        $this->buttonsHelper = \Yii::createObject(ButtonsHelper::class);
+        $this->breadcrumbsHelper = \Yii::createObject(BreadcrumbsHelper::class);
 
         if ($this->formRenderer === null) {
             $formRenderer = FormRenderer::class;
@@ -104,7 +111,7 @@ class CrudViewBehavior extends Behavior
      */
     public function getButtons($action, $modelClass, $id = null)
     {
-        return $this->viewHelper->getButtons($action, $modelClass, $id, $this->buttonsConfig);
+        return $this->buttonsHelper->getButtons($action, $modelClass, $id, $this->buttonsConfig);
     }
 
     /**
@@ -118,7 +125,7 @@ class CrudViewBehavior extends Behavior
      */
     public function getBreadcrumbs($action, $url = null, $name = null, $id = null)
     {
-        return $this->viewHelper->getBreadcrumbs($action, $url, $name, $id);
+        return $this->breadcrumbsHelper->getBreadcrumbs($action, $url, $name, $id);
     }
 
     /**
