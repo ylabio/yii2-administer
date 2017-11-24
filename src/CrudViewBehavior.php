@@ -80,7 +80,6 @@ class CrudViewBehavior extends Behavior
         parent::attach($owner);
         $this->buttonsHelper = \Yii::createObject(ButtonsHelper::class);
         $this->breadcrumbsHelper = \Yii::createObject(BreadcrumbsHelper::class);
-        $this->registerTranslations();
         $this->initRenderer('formRenderer', FormRenderer::class);
         $this->initRenderer('listRenderer', ListRenderer::class);
     }

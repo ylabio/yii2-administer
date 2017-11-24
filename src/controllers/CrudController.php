@@ -123,7 +123,7 @@ class CrudController extends Controller
         return $this->render('index', [
             'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getBodyParams(), $this->modelConfig['url']),
             'title' => $this->modelConfig['labels'][0],
-            'breadcrumbs' => $model->getBreadcrumbs('index'),
+            'breadcrumbs' => $model->getBreadcrumbs('index', null, $this->modelConfig['labels'][0]),
             'buttons' => $model->getButtons('index', $this->modelConfig['url']),
             'columns' => $this->getAllColumns($model),
         ]);
