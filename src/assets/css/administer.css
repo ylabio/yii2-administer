@@ -1,6 +1,10 @@
-.btn-right {
+a.btn-right {
     float: right;
     margin-left: 3px;
+}
+
+a.btn {
+    margin-right: 3px;
 }
 
 .clear:after {

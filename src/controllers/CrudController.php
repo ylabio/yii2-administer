@@ -123,8 +123,9 @@ class CrudController extends Controller
         return $this->render('index', [
             'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getBodyParams(), $this->modelConfig['url']),
             'title' => $this->modelConfig['labels'][0],
-            'breadcrumbs' => ViewHelper::getBreadcrumbs('index'),
-            'buttons' => ViewHelper::getButtons('index', $this->modelConfig['url']),
+            'breadcrumbs' => $model->getBreadcrumbs('index'),
+            'buttons' => $model->getButtons('index', $this->modelConfig['url']),
+            'columns' => $this->getAllColumns($model),
         ]);
     }
 
@@ -142,13 +143,13 @@ class CrudController extends Controller
         return $this->render('view', [
             'model' => $model,
             'title' => \Yii::t('ylab/administer', 'View') . " {$this->modelConfig['labels'][2]} #$id",
-            'breadcrumbs' => ViewHelper::getBreadcrumbs(
+            'breadcrumbs' => $model->getBreadcrumbs(
                 'view',
                 $this->modelConfig['url'],
                 $this->modelConfig['labels'][0],
                 $id
             ),
-            'buttons' => ViewHelper::getButtons('view', $this->modelConfig['url'], $id),
+            'buttons' => $model->getButtons('view', $this->modelConfig['url'], $id),
             'columns' => $this->getAllColumns($model),
         ]);
     }
@@ -175,12 +176,12 @@ class CrudController extends Controller
         return $this->render('create', [
             'form' => $model->renderForm(),
             'title' => \Yii::t('ylab/administer', 'Create') . " {$this->modelConfig['labels'][1]}",
-            'breadcrumbs' => ViewHelper::getBreadcrumbs(
+            'breadcrumbs' => $model->getBreadcrumbs(
                 'create',
                 $this->modelConfig['url'],
                 $this->modelConfig['labels'][0]
             ),
-            'buttons' => ViewHelper::getButtons('create', $this->modelConfig['url']),
+            'buttons' => $model->getButtons('create', $this->modelConfig['url']),
         ]);
     }
 
@@ -206,13 +207,13 @@ class CrudController extends Controller
         return $this->render('update', [
             'form' => $model->renderForm(),
             'title' => \Yii::t('ylab/administer', 'Update') . " {$this->modelConfig['labels'][1]} #$id",
-            'breadcrumbs' => ViewHelper::getBreadcrumbs(
+            'breadcrumbs' => $model->getBreadcrumbs(
                 'update',
                 $this->modelConfig['url'],
                 $this->modelConfig['labels'][0],
                 $id
             ),
-            'buttons' => ViewHelper::getButtons('update', $this->modelConfig['url'], $id),
+            'buttons' => $model->getButtons('update', $this->modelConfig['url'], $id),
         ]);
     }
 

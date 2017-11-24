@@ -5,6 +5,7 @@ namespace ylab\administer;
 use yii\base\InvalidConfigException;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\i18n\PhpMessageSource;
 
 /**
  * @inheritdoc
@@ -28,6 +29,12 @@ class Module extends \yii\base\Module
      * ```
      */
     public $modelsConfig = [];
+    /**
+     * Url prefix for module actions.
+     *
+     * @var string
+     */
+    public $urlPrefix = 'admin';
 
     /**
      * @inheritdoc
@@ -35,13 +42,14 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
+        $this->registerTranslations();
         $urlManager = \Yii::$app->getUrlManager();
         $urlManager->addRules(
             [
-                'admin' => 'admin/crud/default',
-                'admin/<modelClass:[\w-]+>' => 'admin/crud/index',
-                'admin/<modelClass:[\w-]+>/<action:[\w-]+>' => 'admin/crud/<action>',
-                'admin/<modelClass:[\w-]+>/<action:[\w-]+>/<id:\d+>' => 'admin/crud/<action>',
+                "$this->urlPrefix" => "$this->id/crud/default",
+                "$this->urlPrefix/<modelClass:[\\w-]+>" => "$this->id/crud/index",
+                "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>" => "$this->id/crud/<action>",
+                "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>/<id:\\d+>" => "$this->id/crud/<action>",
             ]
         );
         $this->normalizeModelsConfig();
@@ -99,5 +107,24 @@ class Module extends \yii\base\Module
             ];
         }
         $this->modelsConfig = $config;
+    }
+
+    /**
+     * Register needed i18n files
+     */
+    protected function registerTranslations()
+    {
+        if (!isset(\Yii::$app->i18n->translations['ylab/administer'])
+            && !isset(\Yii::$app->i18n->translations['ylab/administer/*'])
+        ) {
+            \Yii::$app->i18n->translations['ylab/administer'] = [
+                'class' => PhpMessageSource::class,
+                'basePath' => '@ylab/administer/messages',
+                'forceTranslation' => true,
+                'fileMap' => [
+                    'ylab/administer' => 'administer.php',
+                ],
+            ];
+        }
     }
 }

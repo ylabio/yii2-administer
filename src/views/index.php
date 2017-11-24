@@ -4,22 +4,18 @@
  * @var string $gridView
  * @var string $title
  * @var array $breadcrumbs
- * @var array $buttons
+ * @var AbstractButton[] $buttons
+ * @var array $columns
  */
 
 use yii\web\View;
+use ylab\administer\buttons\AbstractButton;
 
 $this->title = $title;
 $this->params['breadcrumbs'] = $breadcrumbs;
+$this->params['buttons'] = $buttons;
 ?>
 
-<div class="administer-index">
-    <p class="clear">
-        <?php foreach ($buttons as $button) : ?>
-            <?= $button ?>
-        <?php endforeach; ?>
-    </p>
-    <div class="box box-primary">
-        <?= $gridView ?>
-    </div>
+<div class="administer-index box box-primary">
+    <?= $gridView ?>
 </div>

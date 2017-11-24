@@ -5,15 +5,16 @@ namespace ylab\administer;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
-use yii\i18n\PhpMessageSource;
 use yii\validators\EmailValidator;
 use yii\validators\FileValidator;
 use yii\validators\ImageValidator;
 use yii\validators\NumberValidator;
+use ylab\administer\helpers\BreadcrumbsHelper;
+use ylab\administer\helpers\ButtonsHelper;
 
 /**
  * Behavior for add to ActiveRecord models possibility to use in Administer CRUD module.
- * Usage:
+ * Example usage:
  * ```
  * public function behaviors()
  * {
@@ -21,16 +22,24 @@ use yii\validators\NumberValidator;
  *         'crudView' => [
  *             'class' => CrudViewBehavior::class,
  *             'formRenderer' => [
- *                  'attributesInputs' => [
- *                      'name',
- *                      'avatar' => [
- *                          'type' => 'image',
- *                      ],
- *                      'doc' => [
- *                          'type' => 'file',
- *                      ],
- *                  ],
- *              ],
+ *                 'attributesInputs' => [
+ *                     'name',
+ *                     'avatar' => [
+ *                         'type' => 'image',
+ *                     ],
+ *                     'doc' => [
+ *                         'type' => 'file',
+ *                     ],
+ *                 ],
+ *             ],
+ *            'buttonsConfig' => [
+ *                AbstractButton::TYPE_CREATE => [
+ *                    'text' => 'Add Post',
+ *                    'options' => [
+ *                        'class' => 'btn btn-danger',
+ *                    ],
+ *                ],
+ *            ],
  *         ],
  *     ];
  * }
@@ -49,6 +58,19 @@ class CrudViewBehavior extends Behavior
      * @var ListRenderer
      */
     public $listRenderer;
+    /**
+     * @var array
+     */
+    public $buttonsConfig = [];
+
+    /**
+     * @var ButtonsHelper
+     */
+    protected $buttonsHelper;
+    /**
+     * @var BreadcrumbsHelper
+     */
+    protected $breadcrumbsHelper;
 
     /**
      * @inheritdoc
@@ -56,6 +78,8 @@ class CrudViewBehavior extends Behavior
     public function attach($owner)
     {
         parent::attach($owner);
+        $this->buttonsHelper = \Yii::createObject(ButtonsHelper::class);
+        $this->breadcrumbsHelper = \Yii::createObject(BreadcrumbsHelper::class);
         $this->registerTranslations();
         $this->initRenderer('formRenderer', FormRenderer::class);
         $this->initRenderer('listRenderer', ListRenderer::class);
@@ -86,22 +110,30 @@ class CrudViewBehavior extends Behavior
     }
 
     /**
-     * Register needed i18n files
+     * Get actions buttons.
+     *
+     * @param string $action
+     * @param string $modelClass
+     * @param null|int $id
+     * @return array
      */
-    protected function registerTranslations()
+    public function getButtons($action, $modelClass, $id = null)
     {
-        if (!isset(\Yii::$app->i18n->translations['ylab/administer'])
-            && !isset(\Yii::$app->i18n->translations['ylab/administer/*'])
-        ) {
-            \Yii::$app->i18n->translations['ylab/administer'] = [
-                'class' => PhpMessageSource::class,
-                'basePath' => '@ylab/administer/messages',
-                'forceTranslation' => true,
-                'fileMap' => [
-                    'ylab/administer' => 'administer.php',
-                ],
-            ];
-        }
+        return $this->buttonsHelper->getButtons($action, $modelClass, $id, $this->buttonsConfig);
+    }
+
+    /**
+     * Get breadcrumbs items config.
+     *
+     * @param string $action
+     * @param null|string $url
+     * @param null|string $name
+     * @param null|int $id
+     * @return array
+     */
+    public function getBreadcrumbs($action, $url = null, $name = null, $id = null)
+    {
+        return $this->breadcrumbsHelper->getBreadcrumbs($action, $url, $name, $id);
     }
 
     /**
