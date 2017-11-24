@@ -28,6 +28,12 @@ class Module extends \yii\base\Module
      * ```
      */
     public $modelsConfig = [];
+    /**
+     * Url prefix for module actions.
+     *
+     * @var string
+     */
+    public $urlPrefix = 'admin';
 
     /**
      * @inheritdoc
@@ -38,10 +44,10 @@ class Module extends \yii\base\Module
         $urlManager = \Yii::$app->getUrlManager();
         $urlManager->addRules(
             [
-                'admin' => 'admin/crud/default',
-                'admin/<modelClass:[\w-]+>' => 'admin/crud/index',
-                'admin/<modelClass:[\w-]+>/<action:[\w-]+>' => 'admin/crud/<action>',
-                'admin/<modelClass:[\w-]+>/<action:[\w-]+>/<id:\d+>' => 'admin/crud/<action>',
+                "$this->urlPrefix" => "$this->id/crud/default",
+                "$this->urlPrefix/<modelClass:[\\w-]+>" => "$this->id/crud/index",
+                "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>" => "$this->id/crud/<action>",
+                "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>/<id:\\d+>" => "$this->id/crud/<action>",
             ]
         );
         $this->normalizeModelsConfig();

@@ -32,7 +32,7 @@ $title = $this->title === null ? \Yii::$app->name : $this->title . ' | ' . \Yii:
     <header class="main-header">
         <?= Html::a(
             '<span class="logo-mini">APP</span><span class="logo-lg">' . Yii::$app->name . '</span>',
-            '/admin',
+            '/' . $this->context->module->urlPrefix,
             ['class' => 'logo']
         ) ?>
         <nav class="navbar navbar-static-top" role="navigation">
@@ -59,7 +59,7 @@ $title = $this->title === null ? \Yii::$app->name : $this->title . ' | ' . \Yii:
             <?= Breadcrumbs::widget([
                 'homeLink' => [
                     'label' => '<i class="fa fa-dashboard"></i>' . Yii::t('yii', 'Home'),
-                    'url' => '/admin',
+                    'url' => '/' . $this->context->module->urlPrefix,
                     'encode' => false,
                 ],
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
