@@ -5,6 +5,7 @@ namespace ylab\administer;
 use yii\base\InvalidConfigException;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\i18n\PhpMessageSource;
 
 /**
  * @inheritdoc
@@ -41,6 +42,7 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
+        $this->registerTranslations();
         $urlManager = \Yii::$app->getUrlManager();
         $urlManager->addRules(
             [
@@ -105,5 +107,24 @@ class Module extends \yii\base\Module
             ];
         }
         $this->modelsConfig = $config;
+    }
+
+    /**
+     * Register needed i18n files
+     */
+    protected function registerTranslations()
+    {
+        if (!isset(\Yii::$app->i18n->translations['ylab/administer'])
+            && !isset(\Yii::$app->i18n->translations['ylab/administer/*'])
+        ) {
+            \Yii::$app->i18n->translations['ylab/administer'] = [
+                'class' => PhpMessageSource::class,
+                'basePath' => '@ylab/administer/messages',
+                'forceTranslation' => true,
+                'fileMap' => [
+                    'ylab/administer' => 'administer.php',
+                ],
+            ];
+        }
     }
 }

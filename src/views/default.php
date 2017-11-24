@@ -7,6 +7,6 @@ use yii\web\View;
 ?>
 
 <div class="jumbotron text-center">
-    <h1>Панель управления</h1>
-    <p>приложением "<?= Yii::$app->name ?>"</p>
+    <h1><?= \Yii::t('ylab/administer', 'Control panel') ?></h1>
+    <p><?= \Yii::t('ylab/administer', 'for application') ?> "<?= Yii::$app->name ?>"</p>
 </div>

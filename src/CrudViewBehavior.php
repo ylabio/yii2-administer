@@ -5,7 +5,6 @@ namespace ylab\administer;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
-use yii\i18n\PhpMessageSource;
 use yii\validators\EmailValidator;
 use yii\validators\FileValidator;
 use yii\validators\ImageValidator;
@@ -75,7 +74,6 @@ class CrudViewBehavior extends Behavior
     public function attach($owner)
     {
         parent::attach($owner);
-        $this->registerTranslations();
         $this->buttonsHelper = \Yii::createObject(ButtonsHelper::class);
         $this->breadcrumbsHelper = \Yii::createObject(BreadcrumbsHelper::class);
 
@@ -126,25 +124,6 @@ class CrudViewBehavior extends Behavior
     public function getBreadcrumbs($action, $url = null, $name = null, $id = null)
     {
         return $this->breadcrumbsHelper->getBreadcrumbs($action, $url, $name, $id);
-    }
-
-    /**
-     * Register needed i18n files
-     */
-    protected function registerTranslations()
-    {
-        if (!isset(\Yii::$app->i18n->translations['ylab/administer'])
-            && !isset(\Yii::$app->i18n->translations['ylab/administer/*'])
-        ) {
-            \Yii::$app->i18n->translations['ylab/administer'] = [
-                'class' => PhpMessageSource::class,
-                'basePath' => '@ylab/administer/messages',
-                'forceTranslation' => true,
-                'fileMap' => [
-                    'ylab/administer' => 'administer.php',
-                ],
-            ];
-        }
     }
 
     /**
