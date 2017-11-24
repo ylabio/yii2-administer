@@ -4,7 +4,7 @@
  * @var ActiveDataProvider $dataProvider
  * @var string $title
  * @var array $breadcrumbs
- * @var array $buttons
+ * @var AbstractButton[] $buttons
  * @var array $columns
  */
 
@@ -14,9 +14,8 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Inflector;
-use yii\helpers\StringHelper;
 use yii\web\View;
+use ylab\administer\buttons\AbstractButton;
 
 $this->title = $title;
 $this->params['breadcrumbs'] = $breadcrumbs;
@@ -24,9 +23,9 @@ $this->params['breadcrumbs'] = $breadcrumbs;
 
 <div class="administer-index">
     <p class="clear">
-        <?php if (isset($buttons['create'])) : ?>
-            <?= $buttons['create'] ?>
-        <?php endif; ?>
+        <?php foreach ($buttons as $button) : ?>
+            <?= $button->render() ?>
+        <?php endforeach; ?>
     </p>
     <div class="box box-primary">
         <?= GridView::widget([

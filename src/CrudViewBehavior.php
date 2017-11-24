@@ -13,7 +13,7 @@ use yii\validators\NumberValidator;
 
 /**
  * Behavior for add to ActiveRecord models possibility to use in Administer CRUD module.
- * Usage:
+ * Example usage:
  * ```
  * public function behaviors()
  * {
@@ -21,16 +21,24 @@ use yii\validators\NumberValidator;
  *         'crudView' => [
  *             'class' => CrudViewBehavior::class,
  *             'formRenderer' => [
- *                  'attributesInputs' => [
- *                      'name',
- *                      'avatar' => [
- *                          'type' => 'image',
- *                      ],
- *                      'doc' => [
- *                          'type' => 'file',
- *                      ],
- *                  ],
- *              ],
+ *                 'attributesInputs' => [
+ *                     'name',
+ *                     'avatar' => [
+ *                         'type' => 'image',
+ *                     ],
+ *                     'doc' => [
+ *                         'type' => 'file',
+ *                     ],
+ *                 ],
+ *             ],
+ *            'buttonsConfig' => [
+ *                AbstractButton::TYPE_CREATE => [
+ *                    'text' => 'Add Post',
+ *                    'options' => [
+ *                        'class' => 'btn btn-danger',
+ *                    ],
+ *                ],
+ *            ],
  *         ],
  *     ];
  * }
@@ -45,6 +53,15 @@ class CrudViewBehavior extends Behavior
      * @var FormRenderer
      */
     public $formRenderer;
+    /**
+     * @var array
+     */
+    public $buttonsConfig = [];
+
+    /**
+     * @var ViewHelper
+     */
+    protected $viewHelper;
 
     /**
      * @inheritdoc
@@ -53,6 +70,7 @@ class CrudViewBehavior extends Behavior
     {
         parent::attach($owner);
         $this->registerTranslations();
+        $this->viewHelper = \Yii::createObject(ViewHelper::class);
 
         if ($this->formRenderer === null) {
             $formRenderer = FormRenderer::class;
@@ -74,6 +92,33 @@ class CrudViewBehavior extends Behavior
     public function renderForm()
     {
         return $this->formRenderer->renderForm($this->owner, $this->getFieldsConfig());
+    }
+
+    /**
+     * Get actions buttons.
+     *
+     * @param string $action
+     * @param string $modelClass
+     * @param null|int $id
+     * @return array
+     */
+    public function getButtons($action, $modelClass, $id = null)
+    {
+        return $this->viewHelper->getButtons($action, $modelClass, $id, $this->buttonsConfig);
+    }
+
+    /**
+     * Get breadcrumbs items config.
+     *
+     * @param string $action
+     * @param null|string $url
+     * @param null|string $name
+     * @param null|int $id
+     * @return array
+     */
+    public function getBreadcrumbs($action, $url = null, $name = null, $id = null)
+    {
+        return $this->viewHelper->getBreadcrumbs($action, $url, $name, $id);
     }
 
     /**

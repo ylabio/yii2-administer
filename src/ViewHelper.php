@@ -2,7 +2,13 @@
 
 namespace ylab\administer;
 
-use yii\helpers\Html;
+use yii\base\InvalidCallException;
+use ylab\administer\buttons\AbstractButton;
+use ylab\administer\buttons\CreateButton;
+use ylab\administer\buttons\DeleteButton;
+use ylab\administer\buttons\IndexButton;
+use ylab\administer\buttons\UpdateButton;
+use ylab\administer\buttons\ViewButton;
 
 /**
  * Helper class for get additional page elements.
@@ -18,7 +24,7 @@ class ViewHelper
      * @param null|int $id
      * @return array
      */
-    public static function getBreadcrumbs($action, $url = null, $name = null, $id = null)
+    public function getBreadcrumbs($action, $url = null, $name = null, $id = null)
     {
         if ($action === 'index') {
             return [$name];
@@ -47,120 +53,124 @@ class ViewHelper
      * Create actions buttons.
      *
      * @param string $action
-     * @param string $url
+     * @param string $modelClass
      * @param null|int $id
+     * @param array $buttonsConfig
      * @return array
      */
-    public static function getButtons($action, $url, $id = null)
+    public function getButtons($action, $modelClass, $id = null, $buttonsConfig = [])
     {
         switch ($action) {
             case 'create':
                 return [
-                    'index' => static::getIndexButton($url),
+                    $this->createButton(
+                        AbstractButton::TYPE_INDEX,
+                        ['modelClass' => $modelClass],
+                        $this->getButtonConfig(AbstractButton::TYPE_INDEX, $buttonsConfig)
+
+                    ),
                 ];
             case 'update':
                 return [
-                    'index' => static::getIndexButton($url),
-                    'create' => static::getCreateButton($url),
-                    'view' => static::getViewButton($url, $id),
-                    'delete' => static::getDeleteButton($url, $id),
+                    $this->createButton(
+                        AbstractButton::TYPE_INDEX,
+                        ['modelClass' => $modelClass],
+                        $this->getButtonConfig(AbstractButton::TYPE_INDEX, $buttonsConfig)
+
+                    ),
+                    $this->createButton(
+                        AbstractButton::TYPE_CREATE,
+                        ['modelClass' => $modelClass],
+                        $this->getButtonConfig(AbstractButton::TYPE_CREATE, $buttonsConfig)
+
+                    ),
+                    $this->createButton(
+                        AbstractButton::TYPE_VIEW,
+                        ['modelClass' => $modelClass, 'id' => $id],
+                        $this->getButtonConfig(AbstractButton::TYPE_VIEW, $buttonsConfig)
+
+                    ),
+                    $this->createButton(
+                        AbstractButton::TYPE_DELETE,
+                        ['modelClass' => $modelClass, 'id' => $id],
+                        $this->getButtonConfig(AbstractButton::TYPE_DELETE, $buttonsConfig)
+
+                    ),
                 ];
             case 'view':
                 return [
-                    'index' => static::getIndexButton($url),
-                    'create' => static::getCreateButton($url),
-                    'update' => static::getUpdateButton($url, $id),
-                    'delete' => static::getDeleteButton($url, $id),
+                    $this->createButton(
+                        AbstractButton::TYPE_INDEX,
+                        ['modelClass' => $modelClass],
+                        $this->getButtonConfig(AbstractButton::TYPE_INDEX, $buttonsConfig)
+
+                    ),
+                    $this->createButton(
+                        AbstractButton::TYPE_CREATE,
+                        ['modelClass' => $modelClass],
+                        $this->getButtonConfig(AbstractButton::TYPE_CREATE, $buttonsConfig)
+
+                    ),
+                    $this->createButton(
+                        AbstractButton::TYPE_UPDATE,
+                        ['modelClass' => $modelClass, 'id' => $id],
+                        $this->getButtonConfig(AbstractButton::TYPE_UPDATE, $buttonsConfig)
+
+                    ),
+                    $this->createButton(
+                        AbstractButton::TYPE_DELETE,
+                        ['modelClass' => $modelClass, 'id' => $id],
+                        $this->getButtonConfig(AbstractButton::TYPE_DELETE, $buttonsConfig)
+
+                    ),
                 ];
             case 'index':
             default:
                 return [
-                    'create' => static::getCreateButton($url),
+                    $this->createButton(
+                        AbstractButton::TYPE_CREATE,
+                        ['modelClass' => $modelClass],
+                        $this->getButtonConfig(AbstractButton::TYPE_CREATE, $buttonsConfig)
+                    ),
                 ];
         }
     }
 
     /**
-     * Create button referring to index page.
+     * Create button based on type.
      *
-     * @param string$url
-     * @return string
+     * @param string $type
+     * @param array $urlParams
+     * @param array $config
+     * @return AbstractButton
      */
-    protected static function getIndexButton($url)
+    protected function createButton($type, $urlParams, $config)
     {
-        return Html::a(
-            \Yii::t('ylab/administer', 'Index'),
-            ['index', 'modelClass' => $url],
-            ['class' => 'btn btn-primary btn-right btn-flat glyphicon-list']
-        );
+        switch ($type) {
+            case AbstractButton::TYPE_INDEX:
+                return new IndexButton($urlParams, $config);
+            case AbstractButton::TYPE_VIEW:
+                return new ViewButton($urlParams, $config);
+            case AbstractButton::TYPE_CREATE:
+                return new CreateButton($urlParams, $config);
+            case AbstractButton::TYPE_UPDATE:
+                return new UpdateButton($urlParams, $config);
+            case AbstractButton::TYPE_DELETE:
+                return new DeleteButton($urlParams, $config);
+            default:
+                throw new InvalidCallException("Undefined button type: $type.");
+        }
     }
 
     /**
-     * Create button referring to create page.
+     * Get config for concrete button.
      *
-     * @param string $url
-     * @return string
+     * @param string $type
+     * @param array $config
+     * @return array
      */
-    protected static function getCreateButton($url)
+    protected function getButtonConfig($type, array $config)
     {
-        return Html::a(
-            \Yii::t('ylab/administer', 'Create'),
-            ['create', 'modelClass' => $url],
-            ['class' => 'btn btn-success btn-right btn-flat glyphicon-plus']
-        );
-    }
-
-    /**
-     * Create button referring to update page.
-     *
-     * @param string $url
-     * @param int $id
-     * @return string
-     */
-    protected static function getUpdateButton($url, $id)
-    {
-        return Html::a(
-            \Yii::t('ylab/administer', 'Update'),
-            ['update', 'modelClass' => $url, 'id' => $id],
-            ['class' => 'btn btn-success btn-flat glyphicon-pencil']
-        );
-    }
-
-    /**
-     * Create button referring to view page.
-     *
-     * @param string $url
-     * @param int $id
-     * @return string
-     */
-    protected static function getViewButton($url, $id)
-    {
-        return Html::a(
-            \Yii::t('ylab/administer', 'View'),
-            ['view', 'modelClass' => $url, 'id' => $id],
-            ['class' => 'btn btn-primary btn-flat glyphicon-eye-open']
-        );
-    }
-
-    /**
-     * Create button referring to delete page.
-     *
-     * @param string $url
-     * @param int $id
-     * @return string
-     */
-    protected static function getDeleteButton($url, $id)
-    {
-        return Html::a(
-            \Yii::t('ylab/administer', 'Delete'),
-            ['delete', 'modelClass' => $url, 'id' => $id],
-            [
-                'class' => 'btn btn-danger btn-flat glyphicon-trash',
-                'data' => [
-                    'confirm' => \Yii::t('ylab/administer', 'Are you sure you want to delete this item?'),
-                    'method' => 'POST',
-                ],
-            ]
-        );
+        return isset($config[$type]) ? $config[$type] : [];
     }
 }
