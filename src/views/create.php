@@ -15,9 +15,9 @@ $this->params['breadcrumbs'] = $breadcrumbs;
 
 <div class="administer-create">
     <p class="clear">
-        <?php if (isset($buttons['index'])) : ?>
-            <?= $buttons['index'] ?>
-        <?php endif; ?>
+        <?php foreach ($buttons as $button) : ?>
+            <?= $button ?>
+        <?php endforeach; ?>
     </p>
     <div class="administer-form">
         <?= $form ?>
