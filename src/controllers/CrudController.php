@@ -125,7 +125,6 @@ class CrudController extends Controller
             'title' => $this->modelConfig['labels'][0],
             'breadcrumbs' => $model->getBreadcrumbs('index', null, $this->modelConfig['labels'][0]),
             'buttons' => $model->getButtons('index', $this->modelConfig['url']),
-            'columns' => $this->getAllColumns($model),
         ]);
     }
 
@@ -141,7 +140,7 @@ class CrudController extends Controller
     {
         $model = $this->findModel($modelClass, $id);
         return $this->render('view', [
-            'model' => $model,
+            'detailView' => $model->renderDetailView(),
             'title' => \Yii::t('ylab/administer', 'View') . " {$this->modelConfig['labels'][2]} #$id",
             'breadcrumbs' => $model->getBreadcrumbs(
                 'view',
@@ -150,7 +149,6 @@ class CrudController extends Controller
                 $id
             ),
             'buttons' => $model->getButtons('view', $this->modelConfig['url'], $id),
-            'columns' => $this->getAllColumns($model),
         ]);
     }
 
@@ -251,22 +249,5 @@ class CrudController extends Controller
             return $model;
         }
         throw new NotFoundHttpException();
-    }
-
-    /**
-     * Get all model columns for shows in DetailView.
-     *
-     * @param ActiveRecord $model
-     * @return array
-     */
-    protected function getAllColumns(ActiveRecord $model)
-    {
-        $columns = [];
-        foreach ($model as $name => $value) {
-            if ($value === null || is_scalar($value) || is_callable([$value, '__toString'])) {
-                $columns[] = (string)$name;
-            }
-        }
-        return $columns;
     }
 }

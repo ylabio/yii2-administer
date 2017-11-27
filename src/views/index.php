@@ -5,7 +5,6 @@
  * @var string $title
  * @var array $breadcrumbs
  * @var AbstractButton[] $buttons
- * @var array $columns
  */
 
 use yii\web\View;
