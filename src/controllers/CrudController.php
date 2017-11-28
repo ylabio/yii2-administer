@@ -3,7 +3,6 @@
 namespace ylab\administer\controllers;
 
 use yii\base\InvalidConfigException;
-use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\filters\VerbFilter;
@@ -12,7 +11,6 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use ylab\administer\CrudViewBehavior;
 use ylab\administer\Module;
-use ylab\administer\ViewHelper;
 
 /**
  * Controller for all CRUD actions.
@@ -71,22 +69,6 @@ class CrudController extends Controller
             throw new NotFoundHttpException();
         }
         $this->modelConfig = $this->module->modelsConfig[$args[0]];
-        /** @var ActiveRecord $model */
-        $model = new $this->modelConfig['class'];
-        if ($model->getBehavior('crudView') === null) {
-            $hasBehavior = false;
-            foreach ($model->getBehaviors() as $behavior) {
-                if ($behavior instanceof CrudViewBehavior) {
-                    $hasBehavior = true;
-                    break;
-                }
-            }
-            if (!$hasBehavior) {
-                throw new InvalidConfigException(
-                    "Model '{$this->modelConfig['class']}' must have 'CrudViewBehavior' behavior."
-                );
-            }
-        }
 
         $args[0] = $this->modelConfig['class'];
         return $args;
@@ -120,6 +102,7 @@ class CrudController extends Controller
     public function actionIndex($modelClass)
     {
         $model = new $modelClass();
+        $this->ensureBehavior($model);
         return $this->render('index', [
             'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getBodyParams(), $this->modelConfig['url']),
             'title' => $this->modelConfig['labels'][0],
@@ -163,6 +146,7 @@ class CrudController extends Controller
     {
         /** @var $model \yii\db\ActiveRecord */
         $model = new $modelClass();
+        $this->ensureBehavior($model);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
                 'view',
@@ -246,8 +230,24 @@ class CrudController extends Controller
     {
         $query = new ActiveQuery($modelClass);
         if (($model = $query->andWhere(['id' => $id])->one()) !== null) {
+            $this->ensureBehavior($model);
             return $model;
         }
         throw new NotFoundHttpException();
+    }
+
+    /**
+     * Check CrudViewBehavior attached, attach it if not.
+     *
+     * @param ActiveRecord $model
+     */
+    protected function ensureBehavior(ActiveRecord $model)
+    {
+        foreach ($model->getBehaviors() as $behavior) {
+            if ($behavior instanceof CrudViewBehavior) {
+                return;
+            }
+        }
+        $model->attachBehavior('crudView', CrudViewBehavior::class);
     }
 }
