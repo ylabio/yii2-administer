@@ -11,6 +11,9 @@ use yii\validators\ImageValidator;
 use yii\validators\NumberValidator;
 use ylab\administer\helpers\BreadcrumbsHelper;
 use ylab\administer\helpers\ButtonsHelper;
+use ylab\administer\renderers\DetailRenderer;
+use ylab\administer\renderers\FormRenderer;
+use ylab\administer\renderers\ListRenderer;
 
 /**
  * Behavior for add to ActiveRecord models possibility to use in Administer CRUD module.
@@ -59,6 +62,10 @@ class CrudViewBehavior extends Behavior
      */
     public $listRenderer;
     /**
+     * @var DetailRenderer
+     */
+    public $detailRenderer;
+    /**
      * @var array
      */
     public $buttonsConfig = [];
@@ -82,6 +89,7 @@ class CrudViewBehavior extends Behavior
         $this->breadcrumbsHelper = \Yii::createObject(BreadcrumbsHelper::class);
         $this->initRenderer('formRenderer', FormRenderer::class);
         $this->initRenderer('listRenderer', ListRenderer::class);
+        $this->initRenderer('detailRenderer', DetailRenderer::class);
     }
 
     /**
@@ -96,7 +104,7 @@ class CrudViewBehavior extends Behavior
     }
 
     /**
-     * Render GridView widget and return is as a string.
+     * Render GridView widget and return it as a string.
      *
      * @param array $params
      * @param string $url
@@ -106,6 +114,17 @@ class CrudViewBehavior extends Behavior
     public function renderGrid(array $params, $url)
     {
         return $this->listRenderer->renderGrid($this->owner, $params, $url);
+    }
+
+    /**
+     * Render DetailView widget and return it as a string.
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function renderDetailView()
+    {
+        return $this->detailRenderer->renderDetailView($this->owner);
     }
 
     /**

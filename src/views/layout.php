@@ -9,7 +9,7 @@ use dmstr\widgets\Menu;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\Breadcrumbs;
-use ylab\administer\AssetBundle;
+use ylab\administer\assets\AssetBundle;
 use ylab\administer\widgets\ButtonsWidget;
 
 AssetBundle::register($this);

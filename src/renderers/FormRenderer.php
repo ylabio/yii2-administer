@@ -1,11 +1,12 @@
 <?php
 
-namespace ylab\administer;
+namespace ylab\administer\renderers;
 
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use ylab\administer\FormField;
 
 /**
  * Class for form rendering.

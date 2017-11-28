@@ -1,6 +1,6 @@
 <?php
 
-namespace ylab\administer;
+namespace ylab\administer\assets;
 
 use dmstr\web\AdminLteAsset;
 

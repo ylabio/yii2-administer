@@ -1,6 +1,6 @@
 <?php
 
-namespace ylab\administer;
+namespace ylab\administer\renderers;
 
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
@@ -8,6 +8,7 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
+use ylab\administer\SearchModelInterface;
 
 /**
  * Class for GridView rendering
@@ -60,6 +61,20 @@ class ListRenderer
      * @var string
      */
     public $actionColumnField = 'actionColumn';
+
+    /**
+     * @var ConfigMerger
+     */
+    protected $configMerger;
+
+    /**
+     * DetailRenderer constructor.
+     * @param ConfigMerger $configMerger
+     */
+    public function __construct(ConfigMerger $configMerger)
+    {
+        $this->configMerger = $configMerger;
+    }
 
     /**
      * Render GridView widget and return is as a string.
@@ -120,18 +135,10 @@ class ListRenderer
                 }
             }
         }
-        if (isset($this->gridWidgetConfig['overwriteColumns'])) {
-            foreach ($this->gridWidgetConfig['overwriteColumns'] as $columnName => $columnConfig) {
-                $index = array_search($columnName, $columns, true);
-                if ($index !== false) {
-                    if ($columnConfig === false) {
-                        unset($columns[$index]);
-                    } else {
-                        $columns[$index] = $columnConfig;
-                    }
-                }
-            }
-        }
+        $columns = $this->configMerger->merge(
+            $columns,
+            isset($this->gridWidgetConfig['overwriteColumns']) ? $this->gridWidgetConfig['overwriteColumns'] : []
+        );
         $config['columns'] = ArrayHelper::merge($config['columns'], $columns);
 
         if (isset($this->gridWidgetConfig['overwriteColumns'][$this->actionColumnField])) {
