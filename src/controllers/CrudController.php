@@ -115,16 +115,15 @@ class CrudController extends Controller
      *
      * @param string $modelClass
      * @return string
+     * @throws InvalidConfigException
      */
     public function actionIndex($modelClass)
     {
         $model = new $modelClass();
-        $dataProvider = new ActiveDataProvider(['query' => $modelClass::find()]);
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'model' => $model,
+            'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getBodyParams(), $this->modelConfig['url']),
             'title' => $this->modelConfig['labels'][0],
-            'breadcrumbs' => $model->getBreadcrumbs('index'),
+            'breadcrumbs' => $model->getBreadcrumbs('index', null, $this->modelConfig['labels'][0]),
             'buttons' => $model->getButtons('index', $this->modelConfig['url']),
             'columns' => $this->getAllColumns($model),
         ]);
@@ -255,7 +254,7 @@ class CrudController extends Controller
     }
 
     /**
-     * Get all model columns for shows in GridView in actionIndex.
+     * Get all model columns for shows in DetailView.
      *
      * @param ActiveRecord $model
      * @return array

@@ -9,7 +9,6 @@
 
 use yii\web\View;
 use ylab\administer\buttons\AbstractButton;
-use ylab\administer\widgets\ButtonsWidget;
 
 $this->title = $title;
 $this->params['breadcrumbs'] = $breadcrumbs;

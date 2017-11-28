@@ -55,6 +55,10 @@ class CrudViewBehavior extends Behavior
      */
     public $formRenderer;
     /**
+     * @var ListRenderer
+     */
+    public $listRenderer;
+    /**
      * @var array
      */
     public $buttonsConfig = [];
@@ -76,20 +80,12 @@ class CrudViewBehavior extends Behavior
         parent::attach($owner);
         $this->buttonsHelper = \Yii::createObject(ButtonsHelper::class);
         $this->breadcrumbsHelper = \Yii::createObject(BreadcrumbsHelper::class);
-
-        if ($this->formRenderer === null) {
-            $formRenderer = FormRenderer::class;
-        } else {
-            if (is_array($this->formRenderer) && !isset($this->formRenderer['class'])) {
-                $this->formRenderer['class'] = FormRenderer::class;
-            }
-            $formRenderer = $this->formRenderer;
-        }
-        $this->formRenderer = \Yii::createObject($formRenderer);
+        $this->initRenderer('formRenderer', FormRenderer::class);
+        $this->initRenderer('listRenderer', ListRenderer::class);
     }
 
     /**
-     * Render form and return it as string.
+     * Render form and return it as a string.
      *
      * @return string
      * @throws \yii\base\InvalidConfigException
@@ -97,6 +93,19 @@ class CrudViewBehavior extends Behavior
     public function renderForm()
     {
         return $this->formRenderer->renderForm($this->owner, $this->getFieldsConfig());
+    }
+
+    /**
+     * Render GridView widget and return is as a string.
+     *
+     * @param array $params
+     * @param string $url
+     * @return string
+     * @throws \Exception
+     */
+    public function renderGrid(array $params, $url)
+    {
+        return $this->listRenderer->renderGrid($this->owner, $params, $url);
     }
 
     /**
@@ -178,5 +187,25 @@ class CrudViewBehavior extends Behavior
             $config[$attribute] = ['type' => $type];
         }
         return $config;
+    }
+
+    /**
+     * Init renderer based on user config and default config.
+     *
+     * @param string $property
+     * @param string $class
+     * @throws \yii\base\InvalidConfigException
+     */
+    private function initRenderer($property, $class)
+    {
+        if ($this->{$property} === null) {
+            $renderer = $class;
+        } else {
+            if (is_array($this->{$property}) && !isset($this->{$property}['class'])) {
+                $this->{$property}['class'] = $class;
+            }
+            $renderer = $this->{$property};
+        }
+        $this->{$property} = \Yii::createObject($renderer);
     }
 }
