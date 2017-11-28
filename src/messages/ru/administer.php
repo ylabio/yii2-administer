@@ -3,8 +3,11 @@
 return [
     'Create' => 'Добавить',
     'Update' => 'Редактировать',
-    'List' => 'Список',
+    'Index' => 'Список',
     'View' => 'Просмотр',
     'Delete' => 'Удалить',
+    'Save' => 'Сохранить',
     'Are you sure you want to delete this item?' => 'Вы действительно хотите удалить этот элемент?',
+    'Control panel' => 'Панель управления',
+    'for application' => 'приложением',
 ];
