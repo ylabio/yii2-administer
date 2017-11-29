@@ -40,7 +40,7 @@ class Post extends ActiveRecord
     {
         return [
             [['text'], 'string'],
-            [['user_id'], 'integer'],
+            [['author_id'], 'integer'],
             [['preview'], 'string', 'max' => 255],
         ];
     }
@@ -48,7 +48,7 @@ class Post extends ActiveRecord
     public function behaviors()
     {
         return [
-            [
+            'crudView' => [
                 'class' => CrudViewBehavior::class,
                 'formRenderer' => [
                     'class' => FormRenderer::class,
