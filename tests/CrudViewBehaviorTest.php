@@ -5,7 +5,10 @@ namespace tests;
 use tests\fixtures\AuthorFixture;
 use tests\fixtures\PostFixture;
 use tests\models\Post;
+use yii\base\DynamicModel;
+use yii\base\ErrorException;
 use yii\test\FixtureTrait;
+use ylab\administer\CrudViewBehavior;
 
 /**
  * @inheritdoc
@@ -33,6 +36,21 @@ class CrudViewBehaviorTest extends TestCase
         $this->assertRegExp('/<input type="text"(.)*name="Post\[text\]"/', $form);
         $this->assertRegExp('/<input type="text"(.)*name="Post\[preview\]"/', $form);
         $this->assertRegExp('/<input type="number"(.)*name="Post\[author_id\]"/', $form);
+
+        \Yii::$app = null;
+        $this->mockApplication([
+            'modules' => [
+                'admin' => [
+                    'modelsConfig' => [
+                        DynamicModel::class,
+                    ],
+                ],
+            ],
+        ]);
+        $model = new DynamicModel();
+        $model->attachBehavior('crudView', CrudViewBehavior::class);
+        $this->expectException(PHP_VERSION >= '7.0.0' ? \TypeError::class : ErrorException::class);
+        $model->renderForm();
     }
 
     /**
