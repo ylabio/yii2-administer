@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use ylab\administer\FormField;
+use ylab\administer\fields\FieldInterface;
 
 /**
  * Class for form rendering.
@@ -52,7 +52,17 @@ class FormRenderer
         }
         foreach ($fields as $field => $fieldConfig) {
             $options = ArrayHelper::getValue($fieldConfig, 'options', []);
-            echo FormField::createField($form->field($model, $field), $fieldConfig['type'], $options);
+            $className = ArrayHelper::getValue($fieldConfig, 'class');
+            /* @var $formField FieldInterface */
+            $formField = \Yii::createObject($className);
+
+            if (!($formField instanceof FieldInterface)) {
+                throw new InvalidConfigException(
+                    "Field class '$className' must implements '\\ylab\\administer\\fields\\FieldInterface'"
+                );
+            }
+
+            echo $formField->create($form->field($model, $field), $options);
         }
         echo Html::submitButton(
             \Yii::t('ylab/administer', $model->isNewRecord ? 'Create' : 'Save'),

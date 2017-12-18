@@ -15,8 +15,8 @@
     'attributesInputs' => [
         'id',// поле выводится в форме, тип определяется на основе метода `rules()` модели
         'image' => [
-            'type' => \ylab\administer\FormField::TYPE_IMAGE,
-        ],// поле выводится в форме, тип принудительно установлен как `image`
+            'class' => \ylab\administer\fields\ImageField::class,
+        ],// поле выводится в форме, класс вывода поля установлен принудительно
         // остальные поля
     ],
 ],
@@ -25,15 +25,17 @@
 
 Если свойство `attributesInputs` не установлено или является пустым массивом, то в форме выводятся все атрибуты модели.
 
-#### Типы атрибутов
+#### Классы атрибутов
 
-Всего имеется 5 типов атрибутов:
-- `email` - генерируется `<input type="email">`
-- `number` - генерируется `<input type="number">`
-- `string` - генерируется `<input type="text">`
-- `file` - генерируется `<input type="file">`
-- `image` - генерируется `<input type="file">`, под полем генерируется `<div>` с загруженным изображением, обновляется
-после срабатывания события `onchange()` поля.
+Всего имеется 5 основных классов для вывода атрибутов:
+- `\ylab\administer\fields\EmailField` - генерируется `<input type="email">`
+- `\ylab\administer\fields\NumberField` - генерируется `<input type="number">`
+- `\ylab\administer\fields\StringField` - генерируется `<input type="text">`
+- `\ylab\administer\fields\FileField` - генерируется `<input type="file">`
+- `\ylab\administer\fields\ImageField` - генерируется `<input type="file">`, под полем генерируется `<div>` с загруженным изображением, обновляется
+после срабатывания события `onchange()` поля.  
+
+Классы для вывода атрибутов реализуют `\ylab\administer\fields\FieldInterface`.   
 
 ## ListRenderer
 

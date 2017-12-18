@@ -9,6 +9,11 @@ use yii\validators\EmailValidator;
 use yii\validators\FileValidator;
 use yii\validators\ImageValidator;
 use yii\validators\NumberValidator;
+use ylab\administer\fields\EmailField;
+use ylab\administer\fields\FileField;
+use ylab\administer\fields\ImageField;
+use ylab\administer\fields\NumberField;
+use ylab\administer\fields\StringField;
 use ylab\administer\helpers\BreadcrumbsHelper;
 use ylab\administer\helpers\ButtonsHelper;
 use ylab\administer\renderers\DetailRenderer;
@@ -28,10 +33,10 @@ use ylab\administer\renderers\ListRenderer;
  *                 'attributesInputs' => [
  *                     'name',
  *                     'avatar' => [
- *                         'type' => 'image',
+ *                         'class' => \ylab\administer\fields\ImageField::class,
  *                     ],
  *                     'doc' => [
- *                         'type' => 'file',
+ *                         'class' => \ylab\administer\fields\FileField::class,
  *                     ],
  *                 ],
  *             ],
@@ -166,26 +171,26 @@ class CrudViewBehavior extends Behavior
             $class = get_class($validator);
             switch ($class) {
                 case EmailValidator::class:
-                    $type = FormField::TYPE_EMAIL;
+                    $class = EmailField::class;
                     break;
                 case ImageValidator::class:
-                    $type = FormField::TYPE_IMAGE;
+                    $class = ImageField::class;
                     break;
                 case FileValidator::class:
-                    $type = FormField::TYPE_FILE;
+                    $class = FileField::class;
                     break;
                 case NumberValidator::class:
-                    $type = FormField::TYPE_NUMBER;
+                    $class = NumberField::class;
                     break;
                 default:
                     continue 2;
             }
-            $config = ArrayHelper::merge($config, $this->addInConfig($type, $validator->getAttributeNames()));
+            $config = ArrayHelper::merge($config, $this->addInConfig($class, $validator->getAttributeNames()));
         }
 
         foreach ($this->owner->attributes() as $attribute) {
             if (!isset($config[$attribute])) {
-                $config[$attribute] = ['type' => FormField::TYPE_STRING];
+                $config[$attribute] = ['class' => StringField::class];
             }
         }
 
