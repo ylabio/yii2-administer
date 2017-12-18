@@ -4,6 +4,7 @@ namespace ylab\administer\renderers;
 
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use ylab\administer\FormField;
@@ -50,7 +51,7 @@ class FormRenderer
             echo $form->errorSummary($model, ['class' => 'callout callout-danger']);
         }
         foreach ($fields as $field => $fieldConfig) {
-            $options = isset($fieldConfig['options']) ? $fieldConfig['options'] : [];
+            $options = ArrayHelper::getValue($fieldConfig, 'options', []);
             echo FormField::createField($form->field($model, $field), $fieldConfig['type'], $options);
         }
         echo Html::submitButton(
