@@ -58,7 +58,7 @@ class FormRenderer
 
             if (!($formField instanceof FieldInterface)) {
                 throw new InvalidConfigException(
-                    "Field class '$className' must implements '\\ylab\\administer\\fields\\FieldInterface'"
+                    "Field class '$className' must implements '\\ylab\\administer\\fields\\FieldInterface'."
                 );
             }
 
