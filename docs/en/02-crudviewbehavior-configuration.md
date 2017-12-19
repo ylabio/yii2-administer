@@ -15,8 +15,15 @@
     'attributesInputs' => [
         'id',// field shown in form, type determined based on `rules()` method
         'image' => [
-            'type' => \ylab\administer\FormField::TYPE_IMAGE,
+            'class' => \ylab\administer\fields\ImageField::class,
         ],// fiels shown in form, type set as 'image'
+        'phone' => [
+            'class' => \ylab\administer\fields\WidgetField::class, 
+            'options' => [
+                'class' => \yii\widgets\MaskedInput::class, // class of widget
+                'mask' => '999-99-99',
+            ],
+        ],
         // other fields
     ],
 ],
@@ -26,14 +33,20 @@ If field is not set in `attributesInputs`, then it is not displayed in form.
 
 If `attributesInputs` property not set or is an empty array, then form contain all model attributes.
 
-#### Attribute types
+#### Attribute classes
 
-There are 5 types of attributes:
-- `email` - generated `<input type="email">`
-- `number` - generated `<input type="number">`
-- `string` - generated `<input type="text">`
-- `file` - generated `<input type="file">`
-- `image` - generated `<input type="file">` and `<div>` with image, which updating after `onchange()` events triggering.
+Basic classes to display attributes:
+- `\ylab\administer\fields\EmailField` - generated `<input type="email">`
+- `\ylab\administer\fields\NumberField` - generated `<input type="number">`
+- `\ylab\administer\fields\StringField` - generated `<input type="text">`
+- `\ylab\administer\fields\FileField` - generated `<input type="file">`
+- `\ylab\administer\fields\ImageField` - generated `<input type="file">` and `<div>` with image, which updating after `onchange()` events triggering.
+- `\ylab\administer\fields\DropdownField` - generated `<select>...</select>`
+- `\ylab\administer\fields\CheckboxField` - generated `<input type="checkbox">` внутри `<label>` с подписью для атрибута.
+- `\ylab\administer\fields\TextareaField` - generated `<textarea>`
+- `\ylab\administer\fields\WidgetField` - uses the specified widget, its class must be specified in the array `options`
+
+Classes for the output of attributes extends `\ylab\administer\fields\BaseField`.   
 
 ## ListRenderer
 

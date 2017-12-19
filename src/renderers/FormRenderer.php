@@ -4,9 +4,10 @@ namespace ylab\administer\renderers;
 
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use ylab\administer\FormField;
+use ylab\administer\fields\BaseField;
 
 /**
  * Class for form rendering.
@@ -50,8 +51,18 @@ class FormRenderer
             echo $form->errorSummary($model, ['class' => 'callout callout-danger']);
         }
         foreach ($fields as $field => $fieldConfig) {
-            $options = isset($fieldConfig['options']) ? $fieldConfig['options'] : [];
-            echo FormField::createField($form->field($model, $field), $fieldConfig['type'], $options);
+            $options = ArrayHelper::getValue($fieldConfig, 'options', []);
+            $className = ArrayHelper::getValue($fieldConfig, 'class');
+            /* @var $formField BaseField */
+            $formField = \Yii::createObject($className, [$form->field($model, $field)]);
+
+            if (!($formField instanceof BaseField)) {
+                throw new InvalidConfigException(
+                    "Field class '$className' must extends '\\ylab\\administer\\fields\\BaseField'."
+                );
+            }
+
+            echo $formField->render($options);
         }
         echo Html::submitButton(
             \Yii::t('ylab/administer', $model->isNewRecord ? 'Create' : 'Save'),

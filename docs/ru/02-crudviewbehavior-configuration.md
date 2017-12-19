@@ -15,8 +15,15 @@
     'attributesInputs' => [
         'id',// поле выводится в форме, тип определяется на основе метода `rules()` модели
         'image' => [
-            'type' => \ylab\administer\FormField::TYPE_IMAGE,
-        ],// поле выводится в форме, тип принудительно установлен как `image`
+            'class' => \ylab\administer\fields\ImageField::class,
+        ],// поле выводится в форме, класс вывода поля установлен принудительно
+        'phone' => [
+            'class' => \ylab\administer\fields\WidgetField::class, 
+            'options' => [
+                'class' => \yii\widgets\MaskedInput::class, // класс виджета
+                'mask' => '999-99-99',
+            ],
+        ],
         // остальные поля
     ],
 ],
@@ -25,15 +32,21 @@
 
 Если свойство `attributesInputs` не установлено или является пустым массивом, то в форме выводятся все атрибуты модели.
 
-#### Типы атрибутов
+#### Классы атрибутов
 
-Всего имеется 5 типов атрибутов:
-- `email` - генерируется `<input type="email">`
-- `number` - генерируется `<input type="number">`
-- `string` - генерируется `<input type="text">`
-- `file` - генерируется `<input type="file">`
-- `image` - генерируется `<input type="file">`, под полем генерируется `<div>` с загруженным изображением, обновляется
+Основные классы для вывода атрибутов:
+- `\ylab\administer\fields\EmailField` - генерируется `<input type="email">`
+- `\ylab\administer\fields\NumberField` - генерируется `<input type="number">`
+- `\ylab\administer\fields\StringField` - генерируется `<input type="text">`
+- `\ylab\administer\fields\FileField` - генерируется `<input type="file">`
+- `\ylab\administer\fields\ImageField` - генерируется `<input type="file">`, под полем генерируется `<div>` с загруженным изображением, обновляется
 после срабатывания события `onchange()` поля.
+- `\ylab\administer\fields\DropdownField` - генерируется `<select>...</select>`
+- `\ylab\administer\fields\CheckboxField` - генерируется `<input type="checkbox">` внутри `<label>` с подписью для атрибута.
+- `\ylab\administer\fields\TextareaField` - генерируется `<textarea>`
+- `\ylab\administer\fields\WidgetField` - использует указанный виджет, его класс необходимо указать в массиве `options`
+
+Классы для вывода атрибутов расширяют `\ylab\administer\fields\BaseField`.   
 
 ## ListRenderer
 
