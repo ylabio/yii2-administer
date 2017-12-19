@@ -3,19 +3,18 @@
 namespace ylab\administer\fields;
 
 use yii\helpers\ArrayHelper;
-use yii\widgets\ActiveField;
 
 /**
  * Class for creation checkbox field.
  */
-class CheckboxField implements FieldInterface
+class CheckboxField extends BaseField implements FieldInterface
 {
     /**
      * @inheritdoc
      */
-    public function create(ActiveField $field, array $options = [])
+    public function render(array $options = [])
     {
         $enclosedByLabel = (bool)ArrayHelper::remove($options, 'enclosedByLabel', true);
-        return $field->checkbox($options, $enclosedByLabel)->render();
+        return $this->field->checkbox($options, $enclosedByLabel)->render();
     }
 }

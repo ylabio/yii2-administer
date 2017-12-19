@@ -4,17 +4,16 @@ namespace ylab\administer\fields;
 
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
-use yii\widgets\ActiveField;
 
 /**
  * Class for creation custom widget.
  */
-class WidgetField implements FieldInterface
+class WidgetField extends BaseField implements FieldInterface
 {
     /**
      * @inheritdoc
      */
-    public function create(ActiveField $field, array $options = [])
+    public function render(array $options = [])
     {
         $class = ArrayHelper::remove($options, 'class');
 
@@ -22,6 +21,6 @@ class WidgetField implements FieldInterface
             throw new InvalidConfigException("Class name of widget must be set in 'options.class'.");
         }
 
-        return $field->widget($class, $options)->render();
+        return $this->field->widget($class, $options)->render();
     }
 }

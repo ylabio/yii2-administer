@@ -2,18 +2,16 @@
 
 namespace ylab\administer\fields;
 
-use yii\widgets\ActiveField;
-
 /**
  * Class for creation of file field.
  */
-class FileField implements FieldInterface
+class FileField extends BaseField implements FieldInterface
 {
     /**
      * @inheritdoc
      */
-    public function create(ActiveField $field, array $options = [])
+    public function render(array $options = [])
     {
-        return $field->fileInput($options)->render();
+        return $this->field->fileInput($options)->render();
     }
 }

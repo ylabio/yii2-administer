@@ -2,18 +2,16 @@
 
 namespace ylab\administer\fields;
 
-use yii\widgets\ActiveField;
-
 /**
  * Class for creation email field.
  */
-class EmailField implements FieldInterface
+class EmailField extends BaseField implements FieldInterface
 {
     /**
      * @inheritdoc
      */
-    public function create(ActiveField $field, array $options = [])
+    public function render(array $options = [])
     {
-        return $field->input('email', $options)->render();
+        return $this->field->input('email', $options)->render();
     }
 }

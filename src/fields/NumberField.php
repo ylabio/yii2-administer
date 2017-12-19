@@ -2,18 +2,16 @@
 
 namespace ylab\administer\fields;
 
-use yii\widgets\ActiveField;
-
 /**
  * Class for creation of number field.
  */
-class NumberField implements FieldInterface
+class NumberField extends BaseField implements FieldInterface
 {
     /**
      * @inheritdoc
      */
-    public function create(ActiveField $field, array $options = [])
+    public function render(array $options = [])
     {
-        return $field->input('number', $options)->render();
+        return $this->field->input('number', $options)->render();
     }
 }

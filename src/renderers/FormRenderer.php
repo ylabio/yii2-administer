@@ -54,7 +54,7 @@ class FormRenderer
             $options = ArrayHelper::getValue($fieldConfig, 'options', []);
             $className = ArrayHelper::getValue($fieldConfig, 'class');
             /* @var $formField FieldInterface */
-            $formField = \Yii::createObject($className);
+            $formField = \Yii::createObject($className, [$form->field($model, $field)]);
 
             if (!($formField instanceof FieldInterface)) {
                 throw new InvalidConfigException(
@@ -62,7 +62,7 @@ class FormRenderer
                 );
             }
 
-            echo $formField->create($form->field($model, $field), $options);
+            echo $formField->render($options);
         }
         echo Html::submitButton(
             \Yii::t('ylab/administer', $model->isNewRecord ? 'Create' : 'Save'),
