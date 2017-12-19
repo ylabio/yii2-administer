@@ -15,7 +15,7 @@
     'attributesInputs' => [
         'id',// field shown in form, type determined based on `rules()` method
         'image' => [
-            'type' => \ylab\administer\FormField::TYPE_IMAGE,
+            'class' => \ylab\administer\fields\ImageField::class,
         ],// fiels shown in form, type set as 'image'
         'phone' => [
             'class' => \ylab\administer\fields\WidgetField::class, 
