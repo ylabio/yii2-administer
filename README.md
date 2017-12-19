@@ -38,3 +38,10 @@ For adding model in module, necessary take the following steps:
 [CrudViewBehavior configuration](docs/en/02-crudviewbehavior-configuration.md))
 3) Open URL `http://app_url/module_id`
 4) Module is ready
+
+## Testing
+
+For testing run following command:
+```bash
+php vendor/bin/phpunit
+```

@@ -32,13 +32,14 @@ class ListRenderer
      * 'overwriteColumns' => [
      *     'name' => [
      *         'attribute' => 'name',
-     *         'value => function ($model) {
+     *         'value' => function ($model) {
      *             return ucfirst($model->name);
      *         },
      *     ],
      *     'id' => false,
      *     'serialColumn' => false,
-     *     'actionColumn => [
+     *     'actionColumn' => [
+     *         'class' => ActionColumn::class,
      *         'visibleButtons' => [
      *             'update' => false,
      *         ],
@@ -106,7 +107,7 @@ class ListRenderer
         ];
 
         if ($this->searchModel instanceof SearchModelInterface) {
-            $config['dataProvider'] = new ActiveDataProvider(['query' => $this->searchModel->search($params)]);
+            $config['dataProvider'] = $this->searchModel->search($params);
             $config['filterModel'] = $this->searchModel;
         } else {
             $config['dataProvider'] = new ActiveDataProvider(['query' => $model::find()]);

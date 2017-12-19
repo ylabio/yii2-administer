@@ -38,3 +38,10 @@ php composer.phar require ylab/yii2-administer "*"
 [Использование поведения CrudViewBehavior](docs/ru/02-crudviewbehavior-configuration.md))
 3) Открыть URL-адрес `http://app_url/module_id`
 4) Модуль готов к работе
+
+## Тестирование
+
+Для запуска тестов выполните следующую команду:
+```bash
+php vendor/bin/phpunit
+```

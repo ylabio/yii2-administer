@@ -3,6 +3,7 @@
 namespace ylab\administer\renderers;
 
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\widgets\DetailView;
 
 /**
@@ -23,7 +24,7 @@ class DetailRenderer
      * 'overwriteAttributes' => [
      *     'name' => [
      *         'attribute' => 'name',
-     *         'value => function ($model) {
+     *         'value' => function ($model) {
      *             return ucfirst($model->name);
      *         },
      *     ],
@@ -60,18 +61,23 @@ class DetailRenderer
     {
         if (isset($this->detailWidgetConfig['attributes'])) {
             $attributes = $this->detailWidgetConfig['attributes'];
+            unset($this->detailWidgetConfig['attributes']);
         } else {
             $attributes = $model->attributes();
         }
 
-        return DetailView::widget([
-            'model' => $model,
-            'attributes' => $this->configMerger->merge(
-                $attributes,
-                isset($this->detailWidgetConfig['overwriteAttributes'])
-                    ? $this->detailWidgetConfig['overwriteAttributes']
-                    : []
-            )
-        ]);
+        if (isset($this->detailWidgetConfig['overwriteAttributes'])) {
+            $overwriteAttributes = $this->detailWidgetConfig['overwriteAttributes'];
+            unset($this->detailWidgetConfig['overwriteAttributes']);
+        } else {
+            $overwriteAttributes = [];
+        }
+
+        return DetailView::widget(
+            ArrayHelper::merge($this->detailWidgetConfig, [
+                'model' => $model,
+                'attributes' => $this->configMerger->merge($attributes, $overwriteAttributes)
+            ])
+        );
     }
 }
