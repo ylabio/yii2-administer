@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use ylab\administer\fields\FieldInterface;
+use ylab\administer\fields\BaseField;
 
 /**
  * Class for form rendering.
@@ -53,12 +53,12 @@ class FormRenderer
         foreach ($fields as $field => $fieldConfig) {
             $options = ArrayHelper::getValue($fieldConfig, 'options', []);
             $className = ArrayHelper::getValue($fieldConfig, 'class');
-            /* @var $formField FieldInterface */
+            /* @var $formField BaseField */
             $formField = \Yii::createObject($className, [$form->field($model, $field)]);
 
-            if (!($formField instanceof FieldInterface)) {
+            if (!($formField instanceof BaseField)) {
                 throw new InvalidConfigException(
-                    "Field class '$className' must implements '\\ylab\\administer\\fields\\FieldInterface'."
+                    "Field class '$className' must extends '\\ylab\\administer\\fields\\BaseField'."
                 );
             }
 

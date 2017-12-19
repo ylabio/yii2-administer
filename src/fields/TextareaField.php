@@ -5,7 +5,7 @@ namespace ylab\administer\fields;
 /**
  * Class for creation textarea field.
  */
-class TextareaField extends BaseField implements FieldInterface
+class TextareaField extends BaseField
 {
     /**
      * @inheritdoc

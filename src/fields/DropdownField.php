@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 /**
  * Class for creation field with default dropdown list.
  */
-class DropdownField extends BaseField implements FieldInterface
+class DropdownField extends BaseField
 {
     /**
      * @inheritdoc

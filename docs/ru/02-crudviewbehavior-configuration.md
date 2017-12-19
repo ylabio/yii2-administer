@@ -46,7 +46,7 @@
 - `\ylab\administer\fields\TextareaField` - генерируется `<textarea>`
 - `\ylab\administer\fields\WidgetField` - использует указанный виджет, его класс необходимо указать в массиве `options`
 
-Классы для вывода атрибутов реализуют `\ylab\administer\fields\FieldInterface`.   
+Классы для вывода атрибутов расширяют `\ylab\administer\fields\BaseField`.   
 
 ## ListRenderer
 

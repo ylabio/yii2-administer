@@ -5,7 +5,7 @@ namespace ylab\administer\fields;
 /**
  * Class for creation of number field.
  */
-class NumberField extends BaseField implements FieldInterface
+class NumberField extends BaseField
 {
     /**
      * @inheritdoc

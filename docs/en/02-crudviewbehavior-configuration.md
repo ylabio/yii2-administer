@@ -46,7 +46,7 @@ Basic classes to display attributes:
 - `\ylab\administer\fields\TextareaField` - generated `<textarea>`
 - `\ylab\administer\fields\WidgetField` - uses the specified widget, its class must be specified in the array `options`
 
-Classes for the output of attributes implement `\ylab\administer\fields\FieldInterface`.   
+Classes for the output of attributes extends `\ylab\administer\fields\BaseField`.   
 
 ## ListRenderer
 

@@ -5,7 +5,7 @@ namespace ylab\administer\fields;
 /**
  * Class for creation of file field.
  */
-class FileField extends BaseField implements FieldInterface
+class FileField extends BaseField
 {
     /**
      * @inheritdoc

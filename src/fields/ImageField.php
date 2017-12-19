@@ -9,7 +9,7 @@ use yii\helpers\StringHelper;
 /**
  * Class for creation of file field with image preview.
  */
-class ImageField extends BaseField implements FieldInterface
+class ImageField extends BaseField
 {
     /**
      * @inheritdoc

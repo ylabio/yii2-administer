@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 /**
  * Class for creation custom widget.
  */
-class WidgetField extends BaseField implements FieldInterface
+class WidgetField extends BaseField
 {
     /**
      * @inheritdoc

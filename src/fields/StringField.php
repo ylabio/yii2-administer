@@ -5,7 +5,7 @@ namespace ylab\administer\fields;
 /**
  * Class for creation of string field.
  */
-class StringField extends BaseField implements FieldInterface
+class StringField extends BaseField
 {
     /**
      * @inheritdoc

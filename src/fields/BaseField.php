@@ -21,4 +21,11 @@ abstract class BaseField
     {
         $this->field = $field;
     }
+
+    /**
+     * Creation string representation of form field.
+     * @param array $options
+     * @return string
+     */
+    abstract public function render(array $options = []);
 }

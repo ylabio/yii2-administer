@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 /**
  * Class for creation checkbox field.
  */
-class CheckboxField extends BaseField implements FieldInterface
+class CheckboxField extends BaseField
 {
     /**
      * @inheritdoc

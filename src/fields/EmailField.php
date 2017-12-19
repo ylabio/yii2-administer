@@ -5,7 +5,7 @@ namespace ylab\administer\fields;
 /**
  * Class for creation email field.
  */
-class EmailField extends BaseField implements FieldInterface
+class EmailField extends BaseField
 {
     /**
      * @inheritdoc
