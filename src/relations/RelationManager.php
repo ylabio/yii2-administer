@@ -32,7 +32,7 @@ class RelationManager
      */
     protected $relationalFields = [];
     /**
-     * @var array Relation attributes data.
+     * @var RelatedData[] Relation attributes data.
      */
     protected $relationalData = [];
     /**
@@ -127,10 +127,19 @@ class RelationManager
     public function setRelationValue($name, $value)
     {
         if ($this->canSetProperty($name)) {
-            $this->relationalData[$name] = ['data' => $value];
+//            $this->relationalData[$name] = ['data' => $value];
+            $this->setRelationalData($name, $value);
             return true;
         }
         return false;
+    }
+
+    protected function setRelationalData($name, $value)
+    {
+        if (!array_key_exists($name, $this->relationalData)) {
+            $this->relationalData[$name] = new RelatedData($name);
+        }
+        $this->relationalData[$name]->setData($value);
     }
 
     /**
@@ -156,25 +165,25 @@ class RelationManager
     protected function loadData()
     {
         /** @var ActiveQuery $activeQuery */
-        foreach ($this->relationalData as $attribute => &$data) {
+        foreach ($this->relationalData as $attribute => $data) {
 
-            $getter = 'get' . ucfirst($attribute);
-            $data['activeQuery'] = $activeQuery = $this->model->$getter();
-            $data['newModels'] = [];
-            $data['oldModels'] = [];
-            $data['newRows'] = [];
-            $data['oldRows'] = [];
+//            $getter = 'get' . ucfirst($attribute);
+//            $data['activeQuery'] = $activeQuery = $this->model->$getter();
+            $data->setActiveQuery($this->model->getRelation($attribute));
+//            $data['newModels'] = [];
+//            $data['oldModels'] = [];
+//            $data['newRows'] = [];
+//            $data['oldRows'] = [];
 
-            if (!$this->validateOnCondition($activeQuery)) {
+            if (!$this->validateOnCondition($data->getActiveQuery())) {
                 \Yii::$app->getDb()->getTransaction()->rollBack();
                 throw new \ErrorException('ON condition for attribute ' . $attribute . ' must be associative array');
             }
 
             foreach ($this->services as $service) {
-                if ($service->isNeedLoad($activeQuery)) {
-                    $this->relationalData[$attribute] = $service->load(
-                        $attribute,
-                        $this->relationalData[$attribute],
+                if ($service->isNeedLoad($data)) {
+                    $service->load(
+                        $data,
                         $this->relations[$attribute],
                         $this->model
                     );
@@ -197,14 +206,12 @@ class RelationManager
 //                $this->loadModelsOneToOne($attribute);
 //            }
 
-            if (empty($activeQuery->via)) {
-                $data['oldModels'] = $activeQuery->all();
-            }
-            unset($data['data']);
+//            if (empty($activeQuery->via)) {
+//                $data['oldModels'] = $activeQuery->all();
+//            }
+            $data->setData(null);
 
-            foreach ($data['newModels'] as $i => $model) {
-                $data['newModels'][$i] = $this->replaceExistingModel($model, $attribute);
-            }
+            $data->replaceExistingModels();
         }
     }
 
@@ -216,11 +223,11 @@ class RelationManager
      */
     protected function validateData()
     {
-        foreach ($this->relationalData as $attribute => &$data) {
+        foreach ($this->relationalData as $attribute => $data) {
             /** @var ActiveRecord $model */
             /** @var ActiveQuery $activeQuery */
-            $activeQuery = $data['activeQuery'];
-            foreach ($data['newModels'] as &$model) {
+            $activeQuery = $data->getActiveQuery();
+            foreach ($data->getNewModels() as $model) {
                 if (!$model->validate()) {
                     $_errors = $model->getErrors();
                     $errors = [];
@@ -260,10 +267,10 @@ class RelationManager
             // save models
             $this->saveModels($attribute);
 
-            if (!$data['activeQuery']->multiple && (count($data['newModels']) == 0 || !$data['newModels'][0]->isNewRecord)) {
+            if (!$data->getActiveQuery()->multiple && (count($data->getNewModels()) == 0 || !$data->getNewModels()[0]->isNewRecord)) {
                 $needSaveOwner = true;
-                foreach ($data['activeQuery']->link as $childAttribute => $parentAttribute) {
-                    $this->model->$parentAttribute = count($data['newModels']) ? $data['newModels'][0]->$childAttribute : null;
+                foreach ($data->getActiveQuery()->link as $childAttribute => $parentAttribute) {
+                    $this->model->$parentAttribute = count($data->getNewModels()) ? $data->getNewModels()[0]->$childAttribute : null;
                 }
             }
         }
@@ -302,32 +309,6 @@ class RelationManager
     }
 
     /**
-     * Return existing model if it found in old models
-     *
-     * @param ActiveRecord $model
-     * @param $attribute
-     *
-     * @return ActiveRecord
-     */
-    protected function replaceExistingModel($model, $attribute)
-    {
-        $modelAttributes = $model->attributes;
-        unset($modelAttributes[$model->primaryKey()[0]]);
-
-        foreach ($this->relationalData[$attribute]['oldModels'] as $oldModel) {
-            /** @var ActiveRecord $oldModel */
-            $oldModelAttributes = $oldModel->attributes;
-            unset($oldModelAttributes[$oldModel->primaryKey()[0]]);
-
-            if ($oldModelAttributes == $modelAttributes) {
-                return $oldModel;
-            }
-        }
-
-        return $model;
-    }
-
-    /**
      * Check existing row if it found in old rows
      *
      * @param $row
@@ -337,11 +318,11 @@ class RelationManager
     protected function isExistingRow($row, $attribute)
     {
         $rowAttributes = $row;
-        unset($rowAttributes[$this->relationalData[$attribute]['junctionColumn']]);
+        unset($rowAttributes[$this->relationalData[$attribute]->getJunctionColumn()]);
 
-        foreach ($this->relationalData[$attribute]['oldRows'] as $oldRow) {
+        foreach ($this->relationalData[$attribute]->getOldRows() as $oldRow) {
             $oldModelAttributes = $oldRow;
-            unset($oldModelAttributes[$this->relationalData[$attribute]['junctionColumn']]);
+            unset($oldModelAttributes[$this->relationalData[$attribute]->getJunctionColumn()]);
             if ($oldModelAttributes == $rowAttributes) {
                 return true;
             }
@@ -363,7 +344,7 @@ class RelationManager
         $modelAttributes = $model->attributes;
         unset($modelAttributes[$model->primaryKey()[0]]);
 
-        foreach ($this->relationalData[$attribute]['newModels'] as $newModel) {
+        foreach ($this->relationalData[$attribute]->getNewModels() as $newModel) {
             /** @var ActiveRecord $newModel */
             $newModelAttributes = $newModel->attributes;
             unset($newModelAttributes[$newModel->primaryKey()[0]]);
@@ -386,11 +367,11 @@ class RelationManager
     protected function isDeletedRow($row, $attribute)
     {
         $rowAttribute = $row;
-        unset($rowAttribute[$this->relationalData[$attribute]['junctionColumn']]);
+        unset($rowAttribute[$this->relationalData[$attribute]->getJunctionColumn()]);
 
-        foreach ($this->relationalData[$attribute]['newRows'] as $newRow) {
+        foreach ($this->relationalData[$attribute]->getNewRows() as $newRow) {
             $newRowAttributes = $newRow;
-            unset($newRowAttributes[$this->relationalData[$attribute]['junctionColumn']]);
+            unset($newRowAttributes[$this->relationalData[$attribute]->getJunctionColumn()]);
             if ($newRowAttributes == $rowAttribute) {
                 return false;
             }
@@ -595,62 +576,6 @@ class RelationManager
     }
 
     /**
-     * Load new models from POST for many-to-many relation with via
-     *
-     * @param $attribute
-     * @throws RelationException
-     */
-    protected function loadModelsManyToManyVia($attribute)
-    {
-        $data = $this->relationalData[$attribute];
-
-        $activeQuery = $data['activeQuery'];
-        /** @var ActiveRecord $class */
-        $class = $activeQuery->modelClass;
-
-        if (!is_object($activeQuery->via[1])) {
-            throw new \ErrorException('via condition for attribute ' . $attribute . ' cannot must be object');
-        }
-
-        $via = $activeQuery->via[1];
-        $junctionGetter = 'get' . ucfirst($activeQuery->via[0]);
-        /** @var ActiveRecord $junctionModelClass */
-        $data['junctionModelClass'] = $junctionModelClass = $via->modelClass;
-        $data['junctionTable'] = $junctionModelClass::tableName();
-
-        list($data['junctionColumn']) = array_keys($via->link);
-        list($data['relatedColumn']) = array_values($activeQuery->link);
-        $junctionColumn = $data['junctionColumn'];
-        $relatedColumn = $data['relatedColumn'];
-
-        if (!empty($data['data'])) {
-            // make sure what all model's ids from POST exists in database
-            $countManyToManyModels = $class::find()->where([$class::primaryKey()[0] => $data['data']])->count();
-            if ($countManyToManyModels != count($data['data'])) {
-                throw new \ErrorException('Related records for attribute ' . $attribute . ' not found');
-            }
-            // create new junction models
-            foreach ($data['data'] as $relatedModelId) {
-                $junctionModel = new $junctionModelClass(
-                    array_merge(
-                        !ArrayHelper::isAssociative($via->on) ? [] : $via->on,
-                        [$junctionColumn => $this->model->getPrimaryKey()]
-                    )
-                );
-                $junctionModel->$relatedColumn = $relatedModelId;
-                if (isset($this->relations[$attribute]) && is_callable($this->relations[$attribute])) {
-                    $junctionModel = call_user_func($this->relations[$attribute], $junctionModel, $relatedModelId);
-                }
-                $data['newModels'][] = $junctionModel;
-            }
-        }
-
-        $data['oldModels'] = $this->model->$junctionGetter()->all();
-
-        $this->relationalData[$attribute] = $data;
-    }
-
-    /**
      * Save all new models for attribute
      *
      * @param $attribute
@@ -661,11 +586,11 @@ class RelationManager
         $data = $this->relationalData[$attribute];
 
         /** @var ActiveRecord $model */
-        foreach ($data['newModels'] as $model) {
+        foreach ($data->getNewModels() as $model) {
             if ($model->isNewRecord) {
 
                 foreach ($this->services as $service) {
-                    if ($service->isNeedSave($data['activeQuery'])) {
+                    if ($service->isNeedSave($data)) {
                         $service->save($model, $data, $this->model);
                     }
                 }
@@ -688,12 +613,12 @@ class RelationManager
         }
 
         // only for many-to-many
-        $this->relationsMap($data['newRows'], function($row) use ($attribute, $data) {
-            $junctionColumn = $data['junctionColumn'];
+        $this->relationsMap($data->getNewRows(), function($row) use ($attribute, $data) {
+            $junctionColumn = $data->getJunctionColumn();
             $row[$junctionColumn] = $this->model->getPrimaryKey();
             if (!$this->isExistingRow($row, $attribute)) {
                 \Yii::$app->db->createCommand()
-                    ->insert($data['junctionTable'], $row)
+                    ->insert($data->getJunctionTable(), $row)
                     ->execute();
             }
         });
@@ -710,7 +635,7 @@ class RelationManager
         $data = $this->relationalData[$attribute];
 
         /** @var ActiveRecord $model */
-        foreach ($data['oldModels'] as $model) {
+        foreach ($data->getOldModels() as $model) {
             if ($this->isDeletedModel($model, $attribute)) {
                 if (!$model->delete()) {
                     \Yii::$app->getDb()->getTransaction()->rollBack();
@@ -719,10 +644,10 @@ class RelationManager
             }
         }
 
-        $this->relationsMap($data['oldRows'], function($row) use ($attribute, $data) {
+        $this->relationsMap($data->getOldRows(), function($row) use ($attribute, $data) {
             if ($this->isDeletedRow($row, $attribute)) {
                 \Yii::$app->db->createCommand()
-                    ->delete($data['junctionTable'], $row)
+                    ->delete($data->getJunctionTable(), $row)
                     ->execute();
             }
         });
