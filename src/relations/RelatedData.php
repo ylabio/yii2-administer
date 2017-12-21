@@ -23,11 +23,11 @@ class RelatedData
      */
     protected $activeQuery;
     /**
-     * @var array
+     * @var ActiveRecord[]
      */
     protected $newModels = [];
     /**
-     * @var array
+     * @var ActiveRecord[]
      */
     protected $oldModels = [];
     /**
@@ -93,9 +93,19 @@ class RelatedData
     public function setActiveQuery(ActiveQuery $activeQuery)
     {
         $this->activeQuery = $activeQuery;
+
         if (empty($activeQuery->via)) {
             $this->setOldModels($this->activeQuery->all());
         }
+
+        $via = $this->activeQuery->via[1];
+
+        /* @var ActiveRecord $junctionModelClass */
+        $junctionModelClass = $via->modelClass;
+        $this->setJunctionTable($junctionModelClass::tableName());
+
+        list($junctionColumn) = array_keys($via->link);
+        $this->setJunctionColumn($junctionColumn);
     }
 
     /**
@@ -115,7 +125,7 @@ class RelatedData
     }
 
     /**
-     * @return array
+     * @return ActiveRecord[]
      */
     public function getNewModels()
     {
@@ -123,7 +133,7 @@ class RelatedData
     }
 
     /**
-     * @param array $newModels
+     * @param ActiveRecord[] $newModels
      */
     public function setNewModels($newModels)
     {
@@ -133,9 +143,9 @@ class RelatedData
     /**
      * Append into new models list.
      *
-     * @param $model
+     * @param ActiveRecord $model
      */
-    public function pushNewModel($model)
+    public function pushNewModel(ActiveRecord $model)
     {
         $this->newModels[] = $model;
     }
@@ -229,5 +239,34 @@ class RelatedData
     public function setJunctionTable($junctionTable)
     {
         $this->junctionTable = $junctionTable;
+    }
+
+    /**
+     * Perform validation for the new models. Skip errors for foreign columns.
+     *
+     * @return array|null
+     */
+    public function validate()
+    {
+        foreach ($this->newModels as $model) {
+            if (!$model->validate()) {
+                $_errors = $model->getErrors();
+                $errors = [];
+
+                foreach ($_errors as $relatedAttribute => $error) {
+
+                    if (!$this->activeQuery->multiple || !isset($this->activeQuery->link[$relatedAttribute])) {
+                        $errors[$relatedAttribute] = $error;
+                    }
+
+                }
+
+                if (count($errors)) {
+                    return $errors;
+                }
+            }
+        }
+
+        return null;
     }
 }

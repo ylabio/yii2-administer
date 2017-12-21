@@ -90,14 +90,6 @@ class RelationManager
         $this->loadData();
         $event->isValid = $this->validateData();
     }
-    /**
-     * Return saving state of relation data finished or not. It's will finished after all relations models will saved.
-     * @return bool
-     */
-    public function isRelationalFinished()
-    {
-        return $this->relationalFinished;
-    }
 
     /**
      * Process owner-model after save event. Save models.
@@ -127,17 +119,21 @@ class RelationManager
     public function setRelationValue($name, $value)
     {
         if ($this->canSetProperty($name)) {
-//            $this->relationalData[$name] = ['data' => $value];
             $this->setRelationalData($name, $value);
             return true;
         }
         return false;
     }
 
+    /**
+     * @param string $name
+     * @param string $value
+     */
     protected function setRelationalData($name, $value)
     {
         if (!array_key_exists($name, $this->relationalData)) {
             $this->relationalData[$name] = new RelatedData($name);
+            $this->relationalData[$name]->setActiveQuery($this->model->getRelation($name));
         }
         $this->relationalData[$name]->setData($value);
     }
@@ -160,20 +156,12 @@ class RelationManager
      * ];
      * ```
      *
-     * @throws RelationException
+     * @throws \ErrorException
      */
     protected function loadData()
     {
         /** @var ActiveQuery $activeQuery */
         foreach ($this->relationalData as $attribute => $data) {
-
-//            $getter = 'get' . ucfirst($attribute);
-//            $data['activeQuery'] = $activeQuery = $this->model->$getter();
-            $data->setActiveQuery($this->model->getRelation($attribute));
-//            $data['newModels'] = [];
-//            $data['oldModels'] = [];
-//            $data['newRows'] = [];
-//            $data['oldRows'] = [];
 
             if (!$this->validateOnCondition($data->getActiveQuery())) {
                 \Yii::$app->getDb()->getTransaction()->rollBack();
@@ -206,45 +194,27 @@ class RelationManager
 //                $this->loadModelsOneToOne($attribute);
 //            }
 
-//            if (empty($activeQuery->via)) {
-//                $data['oldModels'] = $activeQuery->all();
-//            }
             $data->setData(null);
-
             $data->replaceExistingModels();
         }
     }
 
     /**
-     * Validate relational models, return true only if all models successfully validated. Skip errors for foreign
-     * columns.
+     * Validate relational models, return true only if all models successfully validated.
      *
      * @return bool
      */
     protected function validateData()
     {
         foreach ($this->relationalData as $attribute => $data) {
-            /** @var ActiveRecord $model */
-            /** @var ActiveQuery $activeQuery */
-            $activeQuery = $data->getActiveQuery();
-            foreach ($data->getNewModels() as $model) {
-                if (!$model->validate()) {
-                    $_errors = $model->getErrors();
-                    $errors = [];
 
-                    foreach ($_errors as $relatedAttribute => $error) {
-                        if (!$activeQuery->multiple || !isset($activeQuery->link[$relatedAttribute])) {
-                            $errors[$relatedAttribute] = $error;
-                        }
-                    }
+            $errors = $data->validate();
 
-                    if (count($errors)) {
-                        $this->model->addError($attribute, $errors);
-
-                        return false;
-                    }
-                }
+            if (!empty($errors)) {
+                $this->model->addError($attribute, $errors);
+                return false;
             }
+
         }
 
         return true;
@@ -294,7 +264,7 @@ class RelationManager
      *
      * @param array $relations
      * @param callable $callback
-     * @throws RelationException
+     * @throws \ErrorException
      */
     protected function relationsMap($relations, $callback)
     {
@@ -386,9 +356,8 @@ class RelationManager
     public function afterDelete()
     {
         foreach ($this->relationalFields as $attribute => $value) {
-//            $getter = 'get' . ucfirst($attribute);
             /** @var ActiveQuery $activeQuery */
-            $activeQuery = $this->model->getRelation($attribute);//$getter();
+            $activeQuery = $this->model->getRelation($attribute);
 
             $models = [];
             if (empty($activeQuery->via)) {
@@ -522,7 +491,7 @@ class RelationManager
      * Load new models from POST for many-to-many relation with viaTable
      *
      * @param $attribute
-     * @throws RelationException
+     * @throws \ErrorException
      */
     protected function loadModelsManyToManyViaTable($attribute)
     {
@@ -628,7 +597,7 @@ class RelationManager
      * Delete all old models for attribute if it needed
      *
      * @param $attribute
-     * @throws RelationException
+     * @throws \ErrorException
      */
     protected function deleteModels($attribute)
     {

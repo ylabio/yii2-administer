@@ -46,29 +46,30 @@ class ManyToManyRelationService
         $via = $activeQuery->via[1];
         /** @var ActiveRecord $junctionModelClass */
         $junctionModelClass = $via->modelClass;
-        $data->setJunctionTable($junctionModelClass::tableName());
 
-        list($junctionColumn) = array_keys($via->link);
-        $data->setJunctionColumn($junctionColumn);
         list($relatedColumn) = array_values($activeQuery->link);
 
         if (!empty($data->getData())) {
+
             // make sure what all model's ids from POST exists in database
             if ($data->getCountModels() != count($data->getData())) {
                 throw new \ErrorException('Related records for attribute ' . $attribute . ' not found');
             }
+
             // create new junction models
             foreach ((array)$data->getData() as $relatedModelId) {
                 $junctionModel = new $junctionModelClass(
                     array_merge(
                         !ArrayHelper::isAssociative($via->on) ? [] : $via->on,
-                        [$junctionColumn => $model->getPrimaryKey()]
+                        [$data->getJunctionColumn() => $model->getPrimaryKey()]
                     )
                 );
                 $junctionModel->$relatedColumn = $relatedModelId;
+
                 if ($relation && is_callable($relation)) {
                     $junctionModel = call_user_func($relation, $junctionModel, $relatedModelId);
                 }
+
                 $data->pushNewModel($junctionModel);
             }
         }
