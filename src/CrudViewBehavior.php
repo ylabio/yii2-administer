@@ -242,14 +242,20 @@ class CrudViewBehavior extends Behavior
     }
 
     /**
-     * @param string $relation name of relation in model
-     * @param string $keyAttribute attribute in related model uses for key
-     * @param string $labelAttribute attribute in related model uses for label
-     * @param string $q query from field
+     * Returns data by relation.
+     *
+     * Define fields of related model in `fields()` method:
+     * - id: for attribute which uses as key
+     * - text: for attribute which uses as label
+     *
+     * @param string $relation Name of relation in model
+     * @param string $keyAttribute Attribute in related model uses for key
+     * @param string $labelAttribute Attribute in related model uses for label
+     * @param string $q Query from field
      * @param int $limit
      * @return array
      */
-    public function getRelatedData($relation, $keyAttribute, $labelAttribute, $q, $limit = 10)
+    public function getRelatedAutocompleteHintsData($relation, $keyAttribute, $labelAttribute, $q, $limit = 10)
     {
         $rel = $this->owner->getRelation($relation);
 

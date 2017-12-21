@@ -43,7 +43,7 @@ class ApiController extends Controller
     {
         $model = $this->findModel($modelClass, $id);
         return new ArrayDataProvider([
-            'allModels' => $model->getRelatedData($relation, $key, $label, $q),
+            'allModels' => $model->getRelatedAutocompleteHintsData($relation, $key, $label, $q),
             'pagination' => false,
         ]);
     }
