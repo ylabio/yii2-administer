@@ -48,6 +48,7 @@ class Module extends \yii\base\Module
             [
                 "$this->urlPrefix" => "$this->id/crud/default",
                 "$this->urlPrefix/<modelClass:[\\w-]+>" => "$this->id/crud/index",
+                "$this->urlPrefix/<modelClass:[\\w-]+>/<action:(autocomplete)>/<id:\\d+>" => "$this->id/api/<action>",
                 "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>" => "$this->id/crud/<action>",
                 "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>/<id:\\d+>" => "$this->id/crud/<action>",
             ]

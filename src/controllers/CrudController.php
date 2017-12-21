@@ -10,7 +10,10 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use ylab\administer\components\FindModelTrait;
+use ylab\administer\components\ParamBindingTrait;
 use ylab\administer\CrudViewBehavior;
+use ylab\administer\models\AutocompleteResult;
 use ylab\administer\Module;
 
 /**
@@ -21,25 +24,12 @@ use ylab\administer\Module;
  */
 class CrudController extends Controller
 {
+    use FindModelTrait, ParamBindingTrait;
+
     /**
      * @inheritdoc
      */
     public $layout = '@ylab/administer/views/layout';
-    /**
-     * Model class config.
-     * Example:
-     * ```
-     * [
-     *     'class' => Post::class,
-     *     'url' => 'posts',
-     *     'labels' => ['Посты', 'Пост', 'Поста'],
-     *     'menuIcon' => 'newsletter',
-     * ],
-     * ```
-     *
-     * @var array
-     */
-    public $modelConfig;
 
     /**
      * @inheritdoc
@@ -54,25 +44,6 @@ class CrudController extends Controller
                 ],
             ],
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bindActionParams($action, $params)
-    {
-        $args = parent::bindActionParams($action, $params);
-        if (count($args) === 0) {
-            return $args;
-        }
-
-        if (!isset($this->module->modelsConfig[$args[0]])) {
-            throw new NotFoundHttpException();
-        }
-        $this->modelConfig = $this->module->modelsConfig[$args[0]];
-
-        $args[0] = $this->modelConfig['class'];
-        return $args;
     }
 
     /**
@@ -218,63 +189,5 @@ class CrudController extends Controller
         return $this->redirect(['index', 'modelClass' => $this->modelConfig['url']]);
     }
 
-    /**
-     * Returns data for relation field with autocomplete.
-     *
-     * Method is temporary.
-     *
-     * @param string $modelClass
-     * @param int $id
-     * @param string $relation
-     * @param string $key
-     * @param string $label
-     * @param string $q
-     * @return Response
-     */
-    public function actionAutocomplete($modelClass, $id, $relation, $key, $label, $q)
-    {
-        $model = $this->findModel($modelClass, $id);
-        return $this->asJson([
-            'results' => ArrayHelper::getColumn(
-                $model->getRelatedData($relation, $key, $label, $q),
-                function ($item) use ($key, $label) {
-                    return ['id' => $item->{$key}, 'text' => $item->{$label}];
-                }
-            ),
-        ]);
-    }
 
-    /**
-     * Finds the model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     *
-     * @param string $modelClass
-     * @param int $id
-     * @return ActiveRecord the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($modelClass, $id)
-    {
-        $query = new ActiveQuery($modelClass);
-        if (($model = $query->andWhere(['id' => $id])->one()) !== null) {
-            $this->ensureBehavior($model);
-            return $model;
-        }
-        throw new NotFoundHttpException();
-    }
-
-    /**
-     * Check CrudViewBehavior attached, attach it if not.
-     *
-     * @param ActiveRecord $model
-     */
-    protected function ensureBehavior(ActiveRecord $model)
-    {
-        foreach ($model->getBehaviors() as $behavior) {
-            if ($behavior instanceof CrudViewBehavior) {
-                return;
-            }
-        }
-        $model->attachBehavior('crudView', CrudViewBehavior::class);
-    }
 }
