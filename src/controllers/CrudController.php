@@ -6,6 +6,7 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -156,7 +157,7 @@ class CrudController extends Controller
         }
 
         return $this->render('create', [
-            'form' => $model->renderForm(),
+            'form' => $model->renderForm($this->modelConfig['url']),
             'title' => \Yii::t('ylab/administer', 'Create') . " {$this->modelConfig['labels'][1]}",
             'breadcrumbs' => $model->getBreadcrumbs(
                 'create',
@@ -187,7 +188,7 @@ class CrudController extends Controller
             ]);
         }
         return $this->render('update', [
-            'form' => $model->renderForm(),
+            'form' => $model->renderForm($this->modelConfig['url']),
             'title' => \Yii::t('ylab/administer', 'Update') . " {$this->modelConfig['labels'][1]} #$id",
             'breadcrumbs' => $model->getBreadcrumbs(
                 'update',
@@ -215,6 +216,32 @@ class CrudController extends Controller
     {
         $this->findModel($modelClass, $id)->delete();
         return $this->redirect(['index', 'modelClass' => $this->modelConfig['url']]);
+    }
+
+    /**
+     * Returns data for relation field with autocomplete.
+     *
+     * Method is temporary.
+     *
+     * @param string $modelClass
+     * @param int $id
+     * @param string $relation
+     * @param string $key
+     * @param string $label
+     * @param string $q
+     * @return Response
+     */
+    public function actionAutocomplete($modelClass, $id, $relation, $key, $label, $q)
+    {
+        $model = $this->findModel($modelClass, $id);
+        return $this->asJson([
+            'results' => ArrayHelper::getColumn(
+                $model->getRelatedData($relation, $label, $q),
+                function ($item) use ($key, $label) {
+                    return ['id' => $item->{$key}, 'text' => $item->{$label}];
+                }
+            ),
+        ]);
     }
 
     /**
