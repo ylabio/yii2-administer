@@ -37,11 +37,12 @@ class FormRenderer
      * Render form and return it as a string.
      *
      * @param ActiveRecord $model
+     * @param string $modelUrl
      * @param array $config
      * @return string
      * @throws InvalidConfigException
      */
-    public function renderForm(ActiveRecord $model, array $config)
+    public function renderForm(ActiveRecord $model, $modelUrl, array $config)
     {
         $fields = $this->mergeConfigs($config);
         ob_start();
@@ -54,7 +55,7 @@ class FormRenderer
             $options = ArrayHelper::getValue($fieldConfig, 'options', []);
             $className = ArrayHelper::getValue($fieldConfig, 'class');
             /* @var $formField BaseField */
-            $formField = \Yii::createObject($className, [$form->field($model, $field)]);
+            $formField = \Yii::createObject($className, [$form->field($model, $field), $modelUrl]);
 
             if (!($formField instanceof BaseField)) {
                 throw new InvalidConfigException(

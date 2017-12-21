@@ -3,6 +3,7 @@
 namespace ylab\administer;
 
 use yii\base\Behavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\validators\EmailValidator;
@@ -16,6 +17,7 @@ use ylab\administer\fields\NumberField;
 use ylab\administer\fields\StringField;
 use ylab\administer\helpers\BreadcrumbsHelper;
 use ylab\administer\helpers\ButtonsHelper;
+use ylab\administer\relations\RelationManager;
 use ylab\administer\renderers\DetailRenderer;
 use ylab\administer\renderers\FormRenderer;
 use ylab\administer\renderers\ListRenderer;
@@ -74,6 +76,10 @@ class CrudViewBehavior extends Behavior
      * @var array
      */
     public $buttonsConfig = [];
+    /**
+     * @var array definitions of relations
+     */
+    public $relations = [];
 
     /**
      * @var ButtonsHelper
@@ -83,6 +89,10 @@ class CrudViewBehavior extends Behavior
      * @var BreadcrumbsHelper
      */
     protected $breadcrumbsHelper;
+    /**
+     * @var RelationManager
+     */
+    protected $relationManager;
 
     /**
      * @inheritdoc
@@ -95,17 +105,18 @@ class CrudViewBehavior extends Behavior
         $this->initRenderer('formRenderer', FormRenderer::class);
         $this->initRenderer('listRenderer', ListRenderer::class);
         $this->initRenderer('detailRenderer', DetailRenderer::class);
+        $this->relationManager = \Yii::createObject(RelationManager::class, [$owner]);
     }
 
     /**
      * Render form and return it as a string.
      *
+     * @param string $modelUrl
      * @return string
-     * @throws \yii\base\InvalidConfigException
      */
-    public function renderForm()
+    public function renderForm($modelUrl)
     {
-        return $this->formRenderer->renderForm($this->owner, $this->getFieldsConfig());
+        return $this->formRenderer->renderForm($this->owner, $modelUrl, $this->getFieldsConfig());
     }
 
     /**
@@ -157,6 +168,24 @@ class CrudViewBehavior extends Behavior
     public function getBreadcrumbs($action, $url = null, $name = null, $id = null)
     {
         return $this->breadcrumbsHelper->getBreadcrumbs($action, $url, $name, $id);
+    }
+
+    /**
+     * @param string $relation name of relation in model
+     * @param string $labelAttribute attribute in related model uses for label
+     * @param string $q query from field
+     * @return array
+     */
+    public function getRelatedData($relation, $labelAttribute, $q)
+    {
+        $rel = $this->owner->getRelation($relation);
+
+        if ($rel) {
+            $query = new ActiveQuery($rel->modelClass);
+            return $query->andWhere(['like', $labelAttribute, $q])->all();
+        }
+
+        return [];
     }
 
     /**
