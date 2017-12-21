@@ -32,6 +32,10 @@ class RelationalAutocompleteField extends BaseField
         $label = ArrayHelper::remove($options, 'labelAttribute');
         $defaultOptions = [
             'initValueText' => ArrayHelper::getValue($this->field, "model.{$relation}.{$label}"),
+            'data' => ArrayHelper::map($this->field->model->{$relation}, $key, $label),
+            'options' => [
+                'multiple' => true,
+            ],
             'pluginOptions' => [
                 'allowClear' => true,
                 'minimumInputLength' => 1,

@@ -236,7 +236,7 @@ class CrudController extends Controller
         $model = $this->findModel($modelClass, $id);
         return $this->asJson([
             'results' => ArrayHelper::getColumn(
-                $model->getRelatedData($relation, $label, $q),
+                $model->getRelatedData($relation, $key, $label, $q),
                 function ($item) use ($key, $label) {
                     return ['id' => $item->{$key}, 'text' => $item->{$label}];
                 }

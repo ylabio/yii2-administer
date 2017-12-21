@@ -3,8 +3,11 @@
 namespace ylab\administer;
 
 use yii\base\Behavior;
+use yii\base\ModelEvent;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\ActiveRecordInterface;
+use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\validators\EmailValidator;
 use yii\validators\FileValidator;
@@ -105,7 +108,67 @@ class CrudViewBehavior extends Behavior
         $this->initRenderer('formRenderer', FormRenderer::class);
         $this->initRenderer('listRenderer', ListRenderer::class);
         $this->initRenderer('detailRenderer', DetailRenderer::class);
-        $this->relationManager = \Yii::createObject(RelationManager::class, [$owner]);
+        $this->relationManager = \Yii::createObject(
+            RelationManager::class,
+            [$owner, $this->relations]
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function events()
+    {
+        return ArrayHelper::merge(
+            parent::events(),
+            [
+                BaseActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
+                BaseActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
+                BaseActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
+                BaseActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
+            ]
+        );
+    }
+
+    /**
+     * Handler of loading relational data.
+     *
+     * @param ModelEvent $event
+     */
+    public function beforeSave(ModelEvent $event)
+    {
+        $this->relationManager->beforeSave($event);
+    }
+
+    /**
+     * Handler of saving relational data.
+     */
+    public function afterSave()
+    {
+        $this->relationManager->afterSave();
+    }
+
+
+    /**
+     * Permission for this behavior to set relational attributes.
+     *
+     * @inheritdoc
+     */
+    public function canSetProperty($name, $checkVars = true)
+    {
+        return $this->relationManager->canSetProperty($name) || parent::canSetProperty($name, $checkVars);
+    }
+
+    /**
+     * Setter for relational attributes. Called only if attribute is exist in POST array.
+     *
+     * @inheritdoc
+     */
+    public function __set($name, $value)
+    {
+        if (!$this->relationManager->setRelationValue($name, $value)) {
+            parent::__set($name, $value);
+        }
     }
 
     /**
