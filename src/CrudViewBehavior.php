@@ -126,6 +126,7 @@ class CrudViewBehavior extends Behavior
                 BaseActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
                 BaseActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
                 BaseActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
+                BaseActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
             ]
         );
     }
@@ -148,6 +149,13 @@ class CrudViewBehavior extends Behavior
         $this->relationManager->afterSave();
     }
 
+    /**
+     * Handler for deletion relational data.
+     */
+    public function afterDelete()
+    {
+        $this->relationManager->afterDelete();
+    }
 
     /**
      * Permission for this behavior to set relational attributes.
