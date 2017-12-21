@@ -41,8 +41,8 @@ class RelationalAutocompleteField extends BaseField
                     'data' => new JsExpression('function(params) { return {q:params.term}; }'),
                 ],
                 'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                'templateResult' => new JsExpression('function(city) { return city.text; }'),
-                'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                'templateResult' => new JsExpression('function(item) { return item.text; }'),
+                'templateSelection' => new JsExpression('function (item) { return item.text; }'),
             ],
         ];
         return ArrayHelper::merge($defaultOptions, $options);

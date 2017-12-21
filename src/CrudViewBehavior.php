@@ -172,17 +172,23 @@ class CrudViewBehavior extends Behavior
 
     /**
      * @param string $relation name of relation in model
+     * @param string $keyAttribute attribute in related model uses for key
      * @param string $labelAttribute attribute in related model uses for label
      * @param string $q query from field
+     * @param int $limit
      * @return array
      */
-    public function getRelatedData($relation, $labelAttribute, $q)
+    public function getRelatedData($relation, $keyAttribute, $labelAttribute, $q, $limit = 10)
     {
         $rel = $this->owner->getRelation($relation);
 
         if ($rel) {
             $query = new ActiveQuery($rel->modelClass);
-            return $query->andWhere(['like', $labelAttribute, $q])->all();
+            return $query
+                ->select([$keyAttribute, $labelAttribute])
+                ->andWhere(['like', $labelAttribute, $q])
+                ->limit($limit)
+                ->all();
         }
 
         return [];
