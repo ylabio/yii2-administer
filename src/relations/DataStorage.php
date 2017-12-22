@@ -30,6 +30,10 @@ class DataStorage
      * @var array Existed data by relation.
      */
     protected $existedData = [];
+    /**
+     * @var bool Data was received.
+     */
+    protected $received = false;
 
     /**
      * @param string $relationName
@@ -59,6 +63,7 @@ class DataStorage
     public function setRawData(array $value)
     {
         $this->rawData = array_filter($value);
+        $this->received = true;
     }
 
     /**
@@ -186,5 +191,13 @@ class DataStorage
                 $this->model->link($this->getRelationName(), $model, $extraColumns);
             }
         }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function needSave()
+    {
+        return $this->received;
     }
 }

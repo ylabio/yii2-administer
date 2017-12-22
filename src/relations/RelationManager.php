@@ -66,9 +66,11 @@ class RelationManager
     public function afterSave()
     {
         foreach ($this->storage as $relationName => $storage) {
-            foreach ($this->services as $service) {
-                if ($service->isNeed($storage)) {
-                    $service->save($storage);
+            if ($storage->needSave()) {
+                foreach ($this->services as $service) {
+                    if ($service->isNeed($storage)) {
+                        $service->save($storage);
+                    }
                 }
             }
         }
