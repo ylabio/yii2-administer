@@ -3,14 +3,10 @@
 namespace ylab\administer\controllers;
 
 use yii\data\ArrayDataProvider;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\rest\Controller;
-use yii\web\NotFoundHttpException;
 use ylab\administer\components\AutocompleteSerializer;
 use ylab\administer\components\FindModelTrait;
 use ylab\administer\components\ParamBindingTrait;
-use ylab\administer\CrudViewBehavior;
 use ylab\administer\Module;
 
 /**
@@ -39,9 +35,15 @@ class ApiController extends Controller
      * @param string $q Query text from user input
      * @return ArrayDataProvider
      */
-    public function actionAutocomplete($modelClass, $id, $relation, $key, $label, $q)
+    public function actionAutocomplete($modelClass, $relation, $key, $label, $q, $id = null)
     {
-        $model = $this->findModel($modelClass, $id);
+        if (!$id) {
+            /** @var $model \yii\db\ActiveRecord */
+            $model = new $modelClass();
+            $this->ensureBehavior($model);
+        } else {
+            $model = $this->findModel($modelClass, $id);
+        }
         return new ArrayDataProvider([
             'allModels' => $model->getRelatedAutocompleteHintsData($relation, $key, $label, $q),
             'pagination' => false,
