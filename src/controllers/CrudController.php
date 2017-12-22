@@ -3,17 +3,12 @@
 namespace ylab\administer\controllers;
 
 use yii\base\InvalidConfigException;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use ylab\administer\components\FindModelTrait;
 use ylab\administer\components\ParamBindingTrait;
-use ylab\administer\CrudViewBehavior;
-use ylab\administer\models\AutocompleteResult;
 use ylab\administer\Module;
 
 /**
@@ -158,6 +153,7 @@ class CrudController extends Controller
                 'id' => $id,
             ]);
         }
+        var_dump($model->errors);
         return $this->render('update', [
             'form' => $model->renderForm($this->modelConfig['url']),
             'title' => \Yii::t('ylab/administer', 'Update') . " {$this->modelConfig['labels'][1]} #$id",
