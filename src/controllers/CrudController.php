@@ -9,6 +9,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use ylab\administer\components\FindModelTrait;
 use ylab\administer\components\ParamBindingTrait;
+use ylab\administer\helpers\ModelHelper;
 use ylab\administer\Module;
 
 /**
@@ -69,7 +70,7 @@ class CrudController extends Controller
     public function actionIndex($modelClass)
     {
         $model = new $modelClass();
-        $this->ensureBehavior($model);
+        ModelHelper::ensureCrudViewBehavior($model);
         return $this->render('index', [
             'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getBodyParams(), $this->modelConfig['url']),
             'title' => $this->modelConfig['labels'][0],
@@ -113,7 +114,7 @@ class CrudController extends Controller
     {
         /** @var $model \yii\db\ActiveRecord */
         $model = new $modelClass();
-        $this->ensureBehavior($model);
+        ModelHelper::ensureCrudViewBehavior($model);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
                 'view',

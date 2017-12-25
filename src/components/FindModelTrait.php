@@ -5,8 +5,11 @@ namespace ylab\administer\components;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
-use ylab\administer\CrudViewBehavior;
+use ylab\administer\helpers\ModelHelper;
 
+/**
+ * Implements search of entity by model class.
+ */
 trait FindModelTrait
 {
     /**
@@ -22,24 +25,9 @@ trait FindModelTrait
     {
         $query = new ActiveQuery($modelClass);
         if (($model = $query->andWhere(['id' => $id])->one()) !== null) {
-            $this->ensureBehavior($model);
+            ModelHelper::ensureCrudViewBehavior($model);
             return $model;
         }
         throw new NotFoundHttpException();
-    }
-
-    /**
-     * Check CrudViewBehavior attached, attach it if not.
-     *
-     * @param ActiveRecord $model
-     */
-    protected function ensureBehavior(ActiveRecord $model)
-    {
-        foreach ($model->getBehaviors() as $behavior) {
-            if ($behavior instanceof CrudViewBehavior) {
-                return;
-            }
-        }
-        $model->attachBehavior('crudView', CrudViewBehavior::class);
     }
 }

@@ -7,6 +7,7 @@ use yii\rest\Controller;
 use ylab\administer\components\AutocompleteSerializer;
 use ylab\administer\components\FindModelTrait;
 use ylab\administer\components\ParamBindingTrait;
+use ylab\administer\helpers\ModelHelper;
 use ylab\administer\Module;
 
 /**
@@ -40,7 +41,7 @@ class ApiController extends Controller
         if (!$id) {
             /** @var $model \yii\db\ActiveRecord */
             $model = new $modelClass();
-            $this->ensureBehavior($model);
+            ModelHelper::ensureCrudViewBehavior($model);
         } else {
             $model = $this->findModel($modelClass, $id);
         }
