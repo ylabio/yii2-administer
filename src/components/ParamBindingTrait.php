@@ -6,8 +6,8 @@ use yii\web\NotFoundHttpException;
 use ylab\administer\Module;
 
 /**
- * Class ParamBindingTrait
- * @package ylab\administer\components
+ * Implements bind of class name to first controller action parameter.
+ *
  * @property Module $module
  */
 trait ParamBindingTrait
