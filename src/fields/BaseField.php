@@ -13,13 +13,19 @@ abstract class BaseField
      * @var ActiveField field object of form
      */
     protected $field;
+    /**
+     * @var string URL of entity
+     */
+    protected $modelUrl;
 
     /**
      * @param ActiveField $field
+     * @param string $modelUrl
      */
-    public function __construct(ActiveField $field)
+    public function __construct(ActiveField $field, $modelUrl)
     {
         $this->field = $field;
+        $this->modelUrl = $modelUrl;
     }
 
     /**

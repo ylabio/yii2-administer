@@ -3,7 +3,11 @@
 namespace ylab\administer;
 
 use yii\base\Behavior;
+use yii\base\ModelEvent;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\ActiveRecordInterface;
+use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\validators\EmailValidator;
 use yii\validators\FileValidator;
@@ -16,6 +20,7 @@ use ylab\administer\fields\NumberField;
 use ylab\administer\fields\StringField;
 use ylab\administer\helpers\BreadcrumbsHelper;
 use ylab\administer\helpers\ButtonsHelper;
+use ylab\administer\relations\RelationManager;
 use ylab\administer\renderers\DetailRenderer;
 use ylab\administer\renderers\FormRenderer;
 use ylab\administer\renderers\ListRenderer;
@@ -74,6 +79,10 @@ class CrudViewBehavior extends Behavior
      * @var array
      */
     public $buttonsConfig = [];
+    /**
+     * @var array definitions of relations
+     */
+    public $relations = [];
 
     /**
      * @var ButtonsHelper
@@ -83,6 +92,10 @@ class CrudViewBehavior extends Behavior
      * @var BreadcrumbsHelper
      */
     protected $breadcrumbsHelper;
+    /**
+     * @var RelationManager
+     */
+    protected $relationManager;
 
     /**
      * @inheritdoc
@@ -95,17 +108,92 @@ class CrudViewBehavior extends Behavior
         $this->initRenderer('formRenderer', FormRenderer::class);
         $this->initRenderer('listRenderer', ListRenderer::class);
         $this->initRenderer('detailRenderer', DetailRenderer::class);
+        $this->relationManager = \Yii::createObject(
+            RelationManager::class,
+            [$owner, $this->relations]
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function events()
+    {
+        return ArrayHelper::merge(
+            parent::events(),
+            [
+                BaseActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
+                BaseActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
+                BaseActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
+                BaseActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
+                BaseActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+                BaseActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
+            ]
+        );
+    }
+
+    /**
+     * Handler of loading relational data.
+     *
+     * @param ModelEvent $event
+     */
+    public function beforeSave(ModelEvent $event)
+    {
+        $this->relationManager->beforeSave($event);
+    }
+
+    /**
+     * Handler of saving relational data.
+     */
+    public function afterSave()
+    {
+        $this->relationManager->afterSave();
+    }
+
+    public function beforeDelete()
+    {
+        $this->relationManager->beforeDelete();
+    }
+
+    /**
+     * Handler for deletion relational data.
+     */
+    public function afterDelete()
+    {
+        $this->relationManager->afterDelete();
+    }
+
+    /**
+     * Permission for this behavior to set relational attributes.
+     *
+     * @inheritdoc
+     */
+    public function canSetProperty($name, $checkVars = true)
+    {
+        return $this->relationManager->canSetProperty($name) || parent::canSetProperty($name, $checkVars);
+    }
+
+    /**
+     * Setter for relational attributes. Called only if attribute is exist in POST array.
+     *
+     * @inheritdoc
+     */
+    public function __set($name, $value)
+    {
+        if (!$this->relationManager->setRelationValue($name, $value)) {
+            parent::__set($name, $value);
+        }
     }
 
     /**
      * Render form and return it as a string.
      *
+     * @param string $modelUrl
      * @return string
-     * @throws \yii\base\InvalidConfigException
      */
-    public function renderForm()
+    public function renderForm($modelUrl)
     {
-        return $this->formRenderer->renderForm($this->owner, $this->getFieldsConfig());
+        return $this->formRenderer->renderForm($this->owner, $modelUrl, $this->getFieldsConfig());
     }
 
     /**
@@ -157,6 +245,36 @@ class CrudViewBehavior extends Behavior
     public function getBreadcrumbs($action, $url = null, $name = null, $id = null)
     {
         return $this->breadcrumbsHelper->getBreadcrumbs($action, $url, $name, $id);
+    }
+
+    /**
+     * Returns data by relation.
+     *
+     * Define fields of related model in `fields()` method:
+     * - id: for attribute which uses as key
+     * - text: for attribute which uses as label
+     *
+     * @param string $relation Name of relation in model
+     * @param string $keyAttribute Attribute in related model uses for key
+     * @param string $labelAttribute Attribute in related model uses for label
+     * @param string $q Query from field
+     * @param int $limit
+     * @return array
+     */
+    public function getRelatedAutocompleteHintsData($relation, $keyAttribute, $labelAttribute, $q, $limit = 10)
+    {
+        $rel = $this->owner->getRelation($relation);
+
+        if ($rel) {
+            $query = new ActiveQuery($rel->modelClass);
+            return $query
+                ->select([$keyAttribute, $labelAttribute])
+                ->andWhere(['like', $labelAttribute, $q])
+                ->limit($limit)
+                ->all();
+        }
+
+        return [];
     }
 
     /**

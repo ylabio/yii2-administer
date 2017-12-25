@@ -3,13 +3,12 @@
 namespace ylab\administer\controllers;
 
 use yii\base\InvalidConfigException;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use ylab\administer\CrudViewBehavior;
+use ylab\administer\components\ParamBindingTrait;
+use ylab\administer\helpers\ModelHelper;
 use ylab\administer\Module;
 
 /**
@@ -20,25 +19,12 @@ use ylab\administer\Module;
  */
 class CrudController extends Controller
 {
+    use ParamBindingTrait;
+
     /**
      * @inheritdoc
      */
     public $layout = '@ylab/administer/views/layout';
-    /**
-     * Model class config.
-     * Example:
-     * ```
-     * [
-     *     'class' => Post::class,
-     *     'url' => 'posts',
-     *     'labels' => ['Посты', 'Пост', 'Поста'],
-     *     'menuIcon' => 'newsletter',
-     * ],
-     * ```
-     *
-     * @var array
-     */
-    public $modelConfig;
 
     /**
      * @inheritdoc
@@ -53,25 +39,6 @@ class CrudController extends Controller
                 ],
             ],
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bindActionParams($action, $params)
-    {
-        $args = parent::bindActionParams($action, $params);
-        if (count($args) === 0) {
-            return $args;
-        }
-
-        if (!isset($this->module->modelsConfig[$args[0]])) {
-            throw new NotFoundHttpException();
-        }
-        $this->modelConfig = $this->module->modelsConfig[$args[0]];
-
-        $args[0] = $this->modelConfig['class'];
-        return $args;
     }
 
     /**
@@ -101,8 +68,7 @@ class CrudController extends Controller
      */
     public function actionIndex($modelClass)
     {
-        $model = new $modelClass();
-        $this->ensureBehavior($model);
+        $model = ModelHelper::createModel($modelClass);
         return $this->render('index', [
             'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getBodyParams(), $this->modelConfig['url']),
             'title' => $this->modelConfig['labels'][0],
@@ -121,7 +87,7 @@ class CrudController extends Controller
      */
     public function actionView($modelClass, $id)
     {
-        $model = $this->findModel($modelClass, $id);
+        $model = ModelHelper::findModel($modelClass, $id);
         return $this->render('view', [
             'detailView' => $model->renderDetailView(),
             'title' => \Yii::t('ylab/administer', 'View') . " {$this->modelConfig['labels'][2]} #$id",
@@ -144,9 +110,7 @@ class CrudController extends Controller
      */
     public function actionCreate($modelClass)
     {
-        /** @var $model \yii\db\ActiveRecord */
-        $model = new $modelClass();
-        $this->ensureBehavior($model);
+        $model = ModelHelper::createModel($modelClass);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
                 'view',
@@ -156,7 +120,7 @@ class CrudController extends Controller
         }
 
         return $this->render('create', [
-            'form' => $model->renderForm(),
+            'form' => $model->renderForm($this->modelConfig['url']),
             'title' => \Yii::t('ylab/administer', 'Create') . " {$this->modelConfig['labels'][1]}",
             'breadcrumbs' => $model->getBreadcrumbs(
                 'create',
@@ -178,7 +142,7 @@ class CrudController extends Controller
      */
     public function actionUpdate($modelClass, $id)
     {
-        $model = $this->findModel($modelClass, $id);
+        $model = ModelHelper::findModel($modelClass, $id);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
                 'view',
@@ -187,7 +151,7 @@ class CrudController extends Controller
             ]);
         }
         return $this->render('update', [
-            'form' => $model->renderForm(),
+            'form' => $model->renderForm($this->modelConfig['url']),
             'title' => \Yii::t('ylab/administer', 'Update') . " {$this->modelConfig['labels'][1]} #$id",
             'breadcrumbs' => $model->getBreadcrumbs(
                 'update',
@@ -213,41 +177,9 @@ class CrudController extends Controller
      */
     public function actionDelete($modelClass, $id)
     {
-        $this->findModel($modelClass, $id)->delete();
+        ModelHelper::findModel($modelClass, $id)->delete();
         return $this->redirect(['index', 'modelClass' => $this->modelConfig['url']]);
     }
 
-    /**
-     * Finds the model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     *
-     * @param string $modelClass
-     * @param int $id
-     * @return ActiveRecord the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($modelClass, $id)
-    {
-        $query = new ActiveQuery($modelClass);
-        if (($model = $query->andWhere(['id' => $id])->one()) !== null) {
-            $this->ensureBehavior($model);
-            return $model;
-        }
-        throw new NotFoundHttpException();
-    }
 
-    /**
-     * Check CrudViewBehavior attached, attach it if not.
-     *
-     * @param ActiveRecord $model
-     */
-    protected function ensureBehavior(ActiveRecord $model)
-    {
-        foreach ($model->getBehaviors() as $behavior) {
-            if ($behavior instanceof CrudViewBehavior) {
-                return;
-            }
-        }
-        $model->attachBehavior('crudView', CrudViewBehavior::class);
-    }
 }
