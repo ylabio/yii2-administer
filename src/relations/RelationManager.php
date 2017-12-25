@@ -43,10 +43,10 @@ class RelationManager
     }
 
     /**
- * Process owner-model before save event.
- *
- * @param ModelEvent $event object of event called by model
- */
+     * Process owner-model before save event.
+     *
+     * @param ModelEvent $event object of event called by model
+     */
     public function beforeSave($event)
     {
         $isValid = $event->isValid;
