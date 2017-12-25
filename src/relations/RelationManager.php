@@ -50,7 +50,7 @@ class RelationManager
     public function beforeSave($event)
     {
         $isValid = $event->isValid;
-        // проверить что данные полученные для связи существуют
+        // checking that data received for relation is exist
         foreach ($this->storage as $relationName => $storage) {
             $storage->loadExisted();
             if (!$storage->validate()) {
