@@ -5,7 +5,6 @@ namespace ylab\administer\controllers;
 use yii\data\ArrayDataProvider;
 use yii\rest\Controller;
 use ylab\administer\components\AutocompleteSerializer;
-use ylab\administer\components\FindModelTrait;
 use ylab\administer\components\ParamBindingTrait;
 use ylab\administer\helpers\ModelHelper;
 use ylab\administer\Module;
@@ -18,7 +17,7 @@ use ylab\administer\Module;
  */
 class ApiController extends Controller
 {
-    use FindModelTrait, ParamBindingTrait;
+    use ParamBindingTrait;
 
     /**
      * @inheritdoc
@@ -39,11 +38,9 @@ class ApiController extends Controller
     public function actionAutocomplete($modelClass, $relation, $key, $label, $q, $id = null)
     {
         if (!$id) {
-            /** @var $model \yii\db\ActiveRecord */
-            $model = new $modelClass();
-            ModelHelper::ensureCrudViewBehavior($model);
+            $model = ModelHelper::createModel($modelClass);
         } else {
-            $model = $this->findModel($modelClass, $id);
+            $model = ModelHelper::findModel($modelClass, $id);
         }
         return new ArrayDataProvider([
             'allModels' => $model->getRelatedAutocompleteHintsData($relation, $key, $label, $q),

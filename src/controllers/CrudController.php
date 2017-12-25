@@ -7,7 +7,6 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use ylab\administer\components\FindModelTrait;
 use ylab\administer\components\ParamBindingTrait;
 use ylab\administer\helpers\ModelHelper;
 use ylab\administer\Module;
@@ -20,7 +19,7 @@ use ylab\administer\Module;
  */
 class CrudController extends Controller
 {
-    use FindModelTrait, ParamBindingTrait;
+    use ParamBindingTrait;
 
     /**
      * @inheritdoc
@@ -69,8 +68,7 @@ class CrudController extends Controller
      */
     public function actionIndex($modelClass)
     {
-        $model = new $modelClass();
-        ModelHelper::ensureCrudViewBehavior($model);
+        $model = ModelHelper::createModel($modelClass);
         return $this->render('index', [
             'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getBodyParams(), $this->modelConfig['url']),
             'title' => $this->modelConfig['labels'][0],
@@ -89,7 +87,7 @@ class CrudController extends Controller
      */
     public function actionView($modelClass, $id)
     {
-        $model = $this->findModel($modelClass, $id);
+        $model = ModelHelper::findModel($modelClass, $id);
         return $this->render('view', [
             'detailView' => $model->renderDetailView(),
             'title' => \Yii::t('ylab/administer', 'View') . " {$this->modelConfig['labels'][2]} #$id",
@@ -112,9 +110,7 @@ class CrudController extends Controller
      */
     public function actionCreate($modelClass)
     {
-        /** @var $model \yii\db\ActiveRecord */
-        $model = new $modelClass();
-        ModelHelper::ensureCrudViewBehavior($model);
+        $model = ModelHelper::createModel($modelClass);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
                 'view',
@@ -146,7 +142,7 @@ class CrudController extends Controller
      */
     public function actionUpdate($modelClass, $id)
     {
-        $model = $this->findModel($modelClass, $id);
+        $model = ModelHelper::findModel($modelClass, $id);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
                 'view',
@@ -154,7 +150,6 @@ class CrudController extends Controller
                 'id' => $id,
             ]);
         }
-        var_dump($model->errors);
         return $this->render('update', [
             'form' => $model->renderForm($this->modelConfig['url']),
             'title' => \Yii::t('ylab/administer', 'Update') . " {$this->modelConfig['labels'][1]} #$id",
@@ -182,7 +177,7 @@ class CrudController extends Controller
      */
     public function actionDelete($modelClass, $id)
     {
-        $this->findModel($modelClass, $id)->delete();
+        ModelHelper::findModel($modelClass, $id)->delete();
         return $this->redirect(['index', 'modelClass' => $this->modelConfig['url']]);
     }
 
