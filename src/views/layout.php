@@ -32,7 +32,7 @@ $title = $this->title === null ? \Yii::$app->name : $this->title . ' | ' . \Yii:
 
     <header class="main-header">
         <?= Html::a(
-            '<span class="logo-mini">APP</span><span class="logo-lg">' . Yii::$app->name . '</span>',
+            '<span class="logo-mini"></span><span class="logo-lg">' . Yii::$app->name . '</span>',
             '/' . $this->context->module->urlPrefix,
             ['class' => 'logo']
         ) ?>
