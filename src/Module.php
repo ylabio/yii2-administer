@@ -35,6 +35,18 @@ class Module extends \yii\base\Module
      * @var string
      */
     public $urlPrefix = 'admin';
+    /**
+     * Base url for uploads.
+     *
+     * @var string
+     */
+    public $uploadsUrl = '/uploads/';
+    /**
+     * Base path for uploads.
+     *
+     * @var string
+     */
+    public $uploadsPath = '@webroot' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
 
     /**
      * @inheritdoc
