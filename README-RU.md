@@ -36,8 +36,9 @@ php composer.phar require ylab/yii2-administer "*"
 1) Сконфигурировать список моделей модуля (см. [Конфигурация моделей модуля](docs/ru/01-module-models-configuration.md))
 2) К каждой модели из конфигурации присоединить поведение `CrudViewBehavior` (см.
 [Использование поведения CrudViewBehavior](docs/ru/02-crudviewbehavior-configuration.md))
-3) Открыть URL-адрес `http://app_url/module_id`
-4) Модуль готов к работе
+3) Настроить фильтрацию в модели для поиска (см. [Настройка фильтрации с помощью FilterQuery](docs/ru/03-filterquery.md))
+4) Открыть URL-адрес `http://app_url/module_id`
+5) Модуль готов к работе
 
 ## Тестирование
 
