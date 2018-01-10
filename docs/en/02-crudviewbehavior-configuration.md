@@ -59,6 +59,7 @@ Classes for the output of attributes extends `\ylab\administer\fields\BaseField`
             'id',
             'name',
             'image',
+            'published_at',
         ],
         'overwriteColumns' => [
             'name' => [
@@ -68,6 +69,10 @@ Classes for the output of attributes extends `\ylab\administer\fields\BaseField`
                 },
             ],
             'id' => false,
+            'published_at' => [
+                'attribute' => 'published_at',
+                'filterClass' => DateIntervalFilterInput::class,
+            ],
             'serialColumn' => false,
             'actionColumn' => [
                 'visibleButtons' => [
