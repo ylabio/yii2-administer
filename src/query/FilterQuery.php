@@ -23,13 +23,13 @@ class FilterQuery
     }
 
     /**
-     * Adds to the query the selection from the date range.
+     * Adds to the query the selection from the interval.
      *
      * @param string $attribute
      * @param string|array $value
      * @param string $separator
      */
-    public function addDateInterval($attribute, $value, $separator = ' - ')
+    public function addInterval($attribute, $value, $separator = ' - ')
     {
         $value = $this->prepareDateIntervalValue($value, $separator);
         $this->query->andFilterWhere([
