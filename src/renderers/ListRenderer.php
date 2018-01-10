@@ -36,6 +36,7 @@ class ListRenderer
      *         'value' => function ($model) {
      *             return ucfirst($model->name);
      *         },
+     *         'filterClass' => Select2FilterInput::class,
      *     ],
      *     'id' => false,
      *     'serialColumn' => false,
