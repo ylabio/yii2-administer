@@ -60,6 +60,7 @@
             'id',
             'name',
             'image',
+            'published_at',
         ],
         'overwriteColumns' => [
             'name' => [
@@ -69,6 +70,10 @@
                 },
             ],
             'id' => false,
+            'published_at' => [
+                'attribute' => 'published_at',
+                'filterClass' => DateIntervalFilterInput::class,
+            ],
             'serialColumn' => false,
             'actionColumn' => [
                 'visibleButtons' => [

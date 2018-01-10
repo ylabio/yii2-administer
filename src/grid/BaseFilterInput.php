@@ -12,11 +12,11 @@ abstract class BaseFilterInput
     /**
      * @var ActiveRecord
      */
-    private $model;
+    protected $model;
     /**
      * @var string
      */
-    private $attribute;
+    protected $attribute;
 
     /**
      * @param $model

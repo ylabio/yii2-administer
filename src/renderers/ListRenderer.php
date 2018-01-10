@@ -2,6 +2,7 @@
 
 namespace ylab\administer\renderers;
 
+use yii\base\InvalidParamException;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\grid\ActionColumn;
@@ -28,6 +29,7 @@ class ListRenderer
      *     'name',
      *     'avatar',
      *     'doc',
+     *     'published_at',
      * ],
      * // other GridView properties
      * 'overwriteColumns' => [
@@ -36,9 +38,12 @@ class ListRenderer
      *         'value' => function ($model) {
      *             return ucfirst($model->name);
      *         },
-     *         'filterClass' => Select2FilterInput::class,
      *     ],
      *     'id' => false,
+     *     'published_at' => [
+     *         'attribute' => 'published_at',
+     *         'filterClass' => DateIntervalFilterInput::class,
+     *     ],
      *     'serialColumn' => false,
      *     'actionColumn' => [
      *         'class' => ActionColumn::class,
@@ -198,8 +203,7 @@ class ListRenderer
 
             // filter class is specified
             if (!$filterClass || !class_exists($filterClass) || !is_subclass_of($filterClass, BaseFilterInput::class)) {
-                $prepared[$key] = $column;
-                continue;
+                throw new InvalidParamException("Filter class {$filterClass} must be instance of " . BaseFilterInput::class);
             }
 
             if ($this->searchModel instanceof ActiveRecord) {
