@@ -44,6 +44,32 @@ class CrudController extends Controller
     /**
      * @inheritdoc
      */
+    public function actions()
+    {
+        $field = \Yii::$app->getRequest()->getQueryParam('field', 'default');
+        $url = \Yii::$app->getRequest()->getQueryParam('modelClass', 'default');
+        return [
+            'image-upload' => [
+                'class' => 'vova07\imperavi\actions\UploadFileAction',
+                'url' => $this->module->uploadsUrl . $url . '/' . $field,
+                'path' => $this->module->uploadsPath . $url . DIRECTORY_SEPARATOR . $field,
+            ],
+            'images-get' => [
+                'class' => 'vova07\imperavi\actions\GetImagesAction',
+                'url' => $this->module->uploadsUrl . $url . '/' . $field,
+                'path' => $this->module->uploadsPath . $url . DIRECTORY_SEPARATOR . $field,
+            ],
+            'image-delete' => [
+                'class' => 'vova07\imperavi\actions\DeleteFileAction',
+                'url' => $this->module->uploadsUrl . $url . '/' . $field,
+                'path' => $this->module->uploadsPath . $url . DIRECTORY_SEPARATOR . $field,
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getViewPath()
     {
         return \Yii::getAlias('@ylab/administer/views');
