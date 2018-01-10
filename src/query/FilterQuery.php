@@ -23,6 +23,8 @@ class FilterQuery
     }
 
     /**
+     * Adds to the query the selection from the date range.
+     *
      * @param string $attribute
      * @param string|array $value
      * @param string $separator
@@ -38,6 +40,8 @@ class FilterQuery
     }
 
     /**
+     * Converts a string with a date interval to an array.
+     *
      * @param string|array $value
      * @param string $separator
      * @return array
