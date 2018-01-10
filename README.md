@@ -39,6 +39,102 @@ For adding model in module, necessary take the following steps:
 3) Open URL `http://app_url/module_id`
 4) Module is ready
 
+## Additional features
+In addition, it is proposed to connect the authorization and exit capability of the user.
+
+To connect the output of the exit button from the panel, you need to implement the interface `UserDataInterface`:
+```php
+<?php
+
+namespace common\components;
+
+use common\models\LoginForm;
+use Yii;
+use ylab\administer\UserDataInterface;
+
+class UserData implements UserDataInterface
+{
+    private $loginForm;
+    
+    public function getUserName()
+    {
+        return 'Ivan Petrov';
+    }
+    
+    public function getAvatar()
+    {
+        return 'web/path/to/avatar';
+    }
+    
+    public function getLoginForm()
+    {
+        if (is_null($this->loginForm)) {
+            $this->loginForm = Yii::createObject(LoginForm::class);
+        }
+
+        return $this->loginForm;
+    }
+}
+
+```
+To connect the authorization form, the `getLoginForm ()` method must
+return implementation of the interface `LoginFormInterface`. In this case, it must necessarily be
+the `yii\base\Model` object. Example:
+```php
+<?php
+namespace common\models;
+
+use Yii;
+use yii\base\Model;
+use ylab\administer\LoginFormInterface;
+
+class LoginForm extends Model implements LoginFormInterface
+{
+    public $email;
+    public $password;
+    public $rememberMe = true;
+
+    public function rules()
+    {
+        // return rules
+    }
+    
+    public function login()
+    {
+        if ($this->validate()) {
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+        }
+        
+        return false;
+    }
+    
+    protected function getUser()
+    {
+        if ($this->user === null) {
+            $this->user = User::find()->byEmail($this->email)->one();
+        }
+
+        return $this->user;
+    }
+    
+    public function getLoginAttribute()
+    {
+        return 'email';
+    }
+    
+    public function getPasswordAttribute()
+    {
+        return 'password';
+    }
+    
+    public function getRememberMeAttribute()
+    {
+        return 'rememberMe';
+    }
+}
+
+```
+
 ## Testing
 
 For testing run following command:

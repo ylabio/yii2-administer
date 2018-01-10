@@ -3,9 +3,11 @@
 namespace ylab\administer;
 
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use yii\i18n\PhpMessageSource;
+use Yii;
 
 /**
  * @inheritdoc
@@ -47,6 +49,14 @@ class Module extends \yii\base\Module
      * @var string
      */
     public $uploadsPath = '@webroot' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+    /**
+     * Class that implements the [[UserDataInterface]].
+     *
+     * @var string|array
+     */
+    public $userDataClass;
+
+    private $userData;
 
     /**
      * @inheritdoc
@@ -55,17 +65,53 @@ class Module extends \yii\base\Module
     {
         parent::init();
         $this->registerTranslations();
+        Yii::$app->user->loginUrl = [$this->id . '/user/login'];
         $urlManager = \Yii::$app->getUrlManager();
-        $urlManager->addRules(
-            [
-                "$this->urlPrefix" => "$this->id/crud/default",
-                "$this->urlPrefix/<modelClass:[\\w-]+>" => "$this->id/crud/index",
-                "$this->urlPrefix/<modelClass:[\\w-]+>/<action:(autocomplete)>/<id:\\d+>" => "$this->id/api/<action>",
-                "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>" => "$this->id/crud/<action>",
-                "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>/<id:\\d+>" => "$this->id/crud/<action>",
-            ]
-        );
+        $rules = [];
+        if ($this->getUserData() !== null) {
+            $rules["$this->urlPrefix/logout"] = "$this->id/user/logout";
+            if ($this->getUserData()->getLoginForm() !== null) {
+                $rules["$this->urlPrefix/login"] = "$this->id/user/login";
+            }
+        }
+        $rules = ArrayHelper::merge($rules, [
+            "$this->urlPrefix" => "$this->id/crud/default",
+            "$this->urlPrefix/<modelClass:[\\w-]+>" => "$this->id/crud/index",
+            "$this->urlPrefix/<modelClass:[\\w-]+>/<action:(autocomplete)>/<id:\\d+>" => "$this->id/api/<action>",
+            "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>" => "$this->id/crud/<action>",
+            "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>/<id:\\d+>" => "$this->id/crud/<action>",
+        ]);
+        $urlManager->addRules($rules);
         $this->normalizeModelsConfig();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        if ($this->getBehavior('access') !== null) {
+            return parent::behaviors();
+        }
+
+        return ArrayHelper::merge(parent::behaviors(), [
+            'access' => [
+                'class' => \yii\filters\AccessControl::className(),
+                'rules' => [
+                    [
+                        'controllers' => ['admin/user'],
+                        'actions' => ['login'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'controllers' => ['admin/api', 'admin/crud'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ]
+        ]);
     }
 
     /**
@@ -84,6 +130,20 @@ class Module extends \yii\base\Module
             ];
         }
         return $items;
+    }
+
+    /**
+     * Get the implementation of the UserDataInterface.
+     *
+     * @return UserDataInterface|null
+     */
+    public function getUserData()
+    {
+        if (is_null($this->userData) && !is_null($this->userDataClass)) {
+            $this->userData = Yii::createObject($this->userDataClass);
+        }
+
+        return $this->userData;
     }
 
     /**
