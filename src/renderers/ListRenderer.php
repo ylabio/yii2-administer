@@ -2,12 +2,16 @@
 
 namespace ylab\administer\renderers;
 
+use yii\base\InvalidParamException;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
+use yii\validators\DateValidator;
+use ylab\administer\grid\BaseFilterInput;
+use ylab\administer\grid\DateIntervalFilterInput;
 use ylab\administer\SearchModelInterface;
 
 /**
@@ -27,6 +31,7 @@ class ListRenderer
      *     'name',
      *     'avatar',
      *     'doc',
+     *     'published_at',
      * ],
      * // other GridView properties
      * 'overwriteColumns' => [
@@ -37,6 +42,10 @@ class ListRenderer
      *         },
      *     ],
      *     'id' => false,
+     *     'published_at' => [
+     *         'attribute' => 'published_at',
+     *         'filterClass' => DateIntervalFilterInput::class,
+     *     ],
      *     'serialColumn' => false,
      *     'actionColumn' => [
      *         'class' => ActionColumn::class,
@@ -141,6 +150,7 @@ class ListRenderer
             isset($this->gridWidgetConfig['overwriteColumns']) ? $this->gridWidgetConfig['overwriteColumns'] : []
         );
         $config['columns'] = ArrayHelper::merge($config['columns'], $columns);
+        $config['columns'] = $this->configureColumnFilters($model, $config['columns']);
 
         if (isset($this->gridWidgetConfig['overwriteColumns'][$this->actionColumnField])) {
             $actionColumnConfig = $this->gridWidgetConfig['overwriteColumns'][$this->actionColumnField];
@@ -166,5 +176,117 @@ class ListRenderer
         }
 
         return ArrayHelper::merge($config, $this->gridWidgetConfig);
+    }
+
+    /**
+     * Configuration of filters for the columns.
+     *
+     * @param ActiveRecord $model
+     * @param array $columns
+     * @return array List of columns with filter configurations
+     */
+    private function configureColumnFilters(ActiveRecord $model, array $columns)
+    {
+        $prepared = [];
+        $defaultColumnFilters = $this->initDefaultFiltersForColumns($model);
+
+        foreach ($columns as $key => $column) {
+            // just string with attribute name
+            if (!is_array($column)) {
+                $column = ['attribute' => $column];
+            }
+
+            // missing required option 'attribute' in config
+            if (!ArrayHelper::keyExists('attribute', $column)) {
+                throw new InvalidParamException("Option 'attribute' is required.");
+            }
+
+            if (
+                !ArrayHelper::keyExists('filter', $column)
+                && !ArrayHelper::keyExists('filterClass', $column)
+                && ArrayHelper::keyExists($column['attribute'], $defaultColumnFilters)
+            ) {
+                // adds default filter
+                $column = ArrayHelper::merge($column, $defaultColumnFilters[$column['attribute']]);
+            }
+
+            $filterClass = ArrayHelper::remove($column, 'filterClass');
+
+            // filter is disabled
+            if (ArrayHelper::keyExists('filter', $column) && $column['filter'] === false) {
+                $prepared[$key] = $column;
+                continue;
+            }
+
+            // filter class is specified
+            if ($filterClass) {
+                if (!class_exists($filterClass) || !is_subclass_of($filterClass, BaseFilterInput::class)) {
+                    throw new InvalidParamException("Filter class {$filterClass} must be instance of " . BaseFilterInput::class);
+                }
+
+                if ($this->searchModel instanceof ActiveRecord) {
+                    /* @var BaseFilterInput $filter */
+                    $filter = new $filterClass($this->searchModel, $column['attribute']);
+                    $column['filter'] = $filter->render(ArrayHelper::getValue($column, 'filterInputOptions', []));
+                }
+            }
+
+            $prepared[$key] = $column;
+        }
+
+        return $prepared;
+    }
+
+    /**
+     * Create config with default filter for columns of model.
+     *
+     * @param ActiveRecord $model
+     * @return array
+     */
+    private function initDefaultFiltersForColumns(ActiveRecord $model)
+    {
+        $config = [];
+
+        foreach ($model->getActiveValidators() as $validator) {
+            $class = get_class($validator);
+            $filter = null;
+
+            switch ($class) {
+                case DateValidator::class:
+                    $filter = DateIntervalFilterInput::class;
+                    break;
+                default:
+                    continue;
+            }
+
+            $config = ArrayHelper::merge($config, $this->setFilterForAttributes($filter, $validator->getAttributeNames()));
+        }
+
+        return $config;
+    }
+
+    /**
+     * Create filter config for scope of attributes.
+     *
+     * @param string|array|null|false $filter
+     * @param array $attributes
+     * @return array
+     */
+    private function setFilterForAttributes($filter, array $attributes)
+    {
+        $parameterName = 'filter';
+
+        if (class_exists($filter)) { // for specified existing class
+            $parameterName = 'filterClass';
+        }
+
+        // create config
+        $config = [];
+
+        foreach ($attributes as $attribute) {
+            $config[$attribute] = [$parameterName => $filter];
+        }
+
+        return $config;
     }
 }

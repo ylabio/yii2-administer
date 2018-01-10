@@ -59,6 +59,7 @@ Classes for the output of attributes extends `\ylab\administer\fields\BaseField`
             'id',
             'name',
             'image',
+            'published_at',
         ],
         'overwriteColumns' => [
             'name' => [
@@ -68,6 +69,10 @@ Classes for the output of attributes extends `\ylab\administer\fields\BaseField`
                 },
             ],
             'id' => false,
+            'published_at' => [
+                'attribute' => 'published_at',
+                'filterClass' => DateIntervalFilterInput::class,
+            ],
             'serialColumn' => false,
             'actionColumn' => [
                 'visibleButtons' => [
@@ -88,7 +93,8 @@ additional property:
 
     `overwriteColumns` - array of fields configurations, where as a key used model fields, as a value used field
     configuration. If as a value set `false`, then this fields not shown. Field configuration array is as
-    [columns](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html#$columns-detail).
+    [columns](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html#$columns-detail),  
+    and has an additional parameter `filterClass` where the name of the class responsible for the output of the filter for the field is set.
 
 - `serialColumnField` - key in `overwriteColumns` for
 [SerialColumn](http://www.yiiframework.com/doc-2.0/yii-grid-serialcolumn.html) configuration.
