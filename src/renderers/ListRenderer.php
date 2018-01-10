@@ -8,6 +8,7 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
+use ylab\administer\grid\BaseFilterInput;
 use ylab\administer\SearchModelInterface;
 
 /**
@@ -141,6 +142,7 @@ class ListRenderer
             isset($this->gridWidgetConfig['overwriteColumns']) ? $this->gridWidgetConfig['overwriteColumns'] : []
         );
         $config['columns'] = ArrayHelper::merge($config['columns'], $columns);
+        $config['columns'] = $this->configureColumnFilters($config['columns']);
 
         if (isset($this->gridWidgetConfig['overwriteColumns'][$this->actionColumnField])) {
             $actionColumnConfig = $this->gridWidgetConfig['overwriteColumns'][$this->actionColumnField];
@@ -166,5 +168,48 @@ class ListRenderer
         }
 
         return ArrayHelper::merge($config, $this->gridWidgetConfig);
+    }
+
+    /**
+     * Configuration of filters for the columns.
+     *
+     * @param array $columns
+     * @return array List of columns with filter configurations
+     */
+    private function configureColumnFilters(array $columns)
+    {
+        $prepared = [];
+
+        foreach ($columns as $key => $column) {
+            $filterClass = ArrayHelper::remove($column, 'filterClass');
+
+            // just string with attribute name
+            if (!is_array($column) || !ArrayHelper::keyExists('attribute', $column)) {
+                $prepared[$key] = $column;
+                continue;
+            }
+
+            // filter is disabled
+            if (ArrayHelper::keyExists('filter', $column) && $column['filter'] === false) {
+                $prepared[$key] = $column;
+                continue;
+            }
+
+            // filter class is specified
+            if (!$filterClass || !class_exists($filterClass) || !is_subclass_of($filterClass, BaseFilterInput::class)) {
+                $prepared[$key] = $column;
+                continue;
+            }
+
+            if ($this->searchModel instanceof ActiveRecord) {
+                /* @var BaseFilterInput $filter */
+                $filter = new $filterClass($this->searchModel, $column['attribute']);
+                $column['filter'] = $filter->render(ArrayHelper::getValue($column, 'filterInputOptions', []));
+            }
+
+            $prepared[$key] = $column;
+        }
+
+        return $prepared;
     }
 }

@@ -70,7 +70,7 @@ class CrudController extends Controller
     {
         $model = ModelHelper::createModel($modelClass);
         return $this->render('index', [
-            'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getBodyParams(), $this->modelConfig['url']),
+            'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getQueryParams(), $this->modelConfig['url']),
             'title' => $this->modelConfig['labels'][0],
             'breadcrumbs' => $model->getBreadcrumbs('index', null, $this->modelConfig['labels'][0]),
             'buttons' => $model->getButtons('index', $this->modelConfig['url']),
