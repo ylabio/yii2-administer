@@ -94,7 +94,8 @@
 
     `overwriteColumns` - массив конфигураций полей, где в качестве ключей выступают поля модели, а в качестве значений -
     конфигурация поля. Если в качестве значения установлено `false`, то это поле не отображается. Массив конфигурации
-    аналогичен полю [columns](http://stuff.cebe.cc/yii2docs-ru/yii-grid-gridview.html#$columns-detail).
+    аналогичен полю [columns](http://stuff.cebe.cc/yii2docs-ru/yii-grid-gridview.html#$columns-detail), 
+    и имеет дополнительный параметр `filterClass` где устанавливается имя класса отвечающего за вывод фильтра для поля.   
 
 - `serialColumnField` - название ключа в `overwriteColumns` для конфигурации
 [SerialColumn](http://stuff.cebe.cc/yii2docs-ru/yii-grid-serialcolumn.html).
