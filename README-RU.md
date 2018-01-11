@@ -40,6 +40,102 @@ php composer.phar require ylab/yii2-administer "*"
 4) Открыть URL-адрес `http://app_url/module_id`
 5) Модуль готов к работе
 
+## Дополнительные возможности
+Дополнительно предлагается подключить возможность авторизации и выхода пользователя.
+
+Чтобы подключить вывод кнопки выхода из панели, нужно реализовать интерфейс `UserDataInterface`:
+```php
+<?php
+
+namespace common\components;
+
+use common\models\LoginForm;
+use Yii;
+use ylab\administer\UserDataInterface;
+
+class UserData implements UserDataInterface
+{
+    private $loginForm;
+    
+    public function getUserName()
+    {
+        return 'Ivan Petrov';
+    }
+    
+    public function getAvatar()
+    {
+        return 'web/path/to/avatar';
+    }
+    
+    public function getLoginForm()
+    {
+        if (is_null($this->loginForm)) {
+            $this->loginForm = Yii::createObject(LoginForm::class);
+        }
+
+        return $this->loginForm;
+    }
+}
+
+```
+Чтобы подключить форму авторизации, метод `getLoginForm()` должен
+возвращать реализацию интерфейса `LoginFormInterface`. При этом он обязательно должен быть
+объектом `yii\base\Model`. Пример:
+```php
+<?php
+namespace common\models;
+
+use Yii;
+use yii\base\Model;
+use ylab\administer\LoginFormInterface;
+
+class LoginForm extends Model implements LoginFormInterface
+{
+    public $email;
+    public $password;
+    public $rememberMe = true;
+
+    public function rules()
+    {
+        // return rules
+    }
+    
+    public function login()
+    {
+        if ($this->validate()) {
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+        }
+        
+        return false;
+    }
+    
+    protected function getUser()
+    {
+        if ($this->user === null) {
+            $this->user = User::find()->byEmail($this->email)->one();
+        }
+
+        return $this->user;
+    }
+    
+    public function getLoginAttribute()
+    {
+        return 'email';
+    }
+    
+    public function getPasswordAttribute()
+    {
+        return 'password';
+    }
+    
+    public function getRememberMeAttribute()
+    {
+        return 'rememberMe';
+    }
+}
+
+```
+
 ## Тестирование
 
 Для запуска тестов выполните следующую команду:
