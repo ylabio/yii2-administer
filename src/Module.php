@@ -55,6 +55,26 @@ class Module extends \yii\base\Module
      * @var string|array
      */
     public $userDataClass;
+    /**
+     * @var array
+     *
+     * Example:
+     * ```
+     * [
+     *     [
+     *         'modelId' => 'post',
+     *     ],
+     *     [
+     *         'label' => 'Справочники',
+     *         'icon' => 'list',
+     *         'items' => [
+     *             ['modelId' => 'post-tags'],
+     *         ],
+     *     ],
+     * ]
+     * ```
+     */
+    public $menuConfig = [];
 
     private $userData;
 
@@ -121,12 +141,43 @@ class Module extends \yii\base\Module
      */
     public function getMenuItems()
     {
+        $items = $this->getMenuItem($this->menuConfig);
+        return $items;
+    }
+
+    /**
+     * Get configuration for list of menu items.
+     *
+     * @param array $config
+     * @return array Configuration for `Menu` widget
+     * @throws InvalidConfigException
+     */
+    protected function getMenuItem($config = [])
+    {
         $items = [];
-        foreach ($this->modelsConfig as $config) {
+        foreach ($config as $element) {
+            $label = ArrayHelper::getValue($element, 'label');
+            $icon = ArrayHelper::getValue($element, 'icon');
+            $url = ArrayHelper::getValue($element, 'url');
+
+            // getting values from configuration of model
+            if (isset($element['modelId'])) {
+                $modelConfig = ArrayHelper::getValue($this->modelsConfig, $element['modelId']);
+
+                if (!$modelConfig) {
+                    throw new InvalidConfigException("Model with ID \"{$element['modelId']}\" is not configured.");
+                }
+
+                $label = $label ?: $modelConfig['labels'][0];
+                $icon = $icon ?: $modelConfig['menuIcon'];
+                $url = $url ?: ['index', 'modelClass' => $modelConfig['url']];
+            }
+
             $items[] = [
-                'label' => $config['labels'][0],
-                'icon' => $config['menuIcon'],
-                'url' => ['index', 'modelClass' => $config['url']],
+                'label' => $label,
+                'icon' => $icon,
+                'url' => $url ?: '#',
+                'items' => isset($element['items']) ? $this->getMenuItem($element['items']) : null,
             ];
         }
         return $items;
