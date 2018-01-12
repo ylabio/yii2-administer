@@ -37,8 +37,9 @@ For adding model in module, necessary take the following steps:
 2) For every model attach `CrudViewBehavior` (see
 [CrudViewBehavior configuration](docs/en/02-crudviewbehavior-configuration.md))
 3) Configure filtering in the model for search (see [Using filtering with FilterQuery](docs/en/03-filterquery.md))
-4) Open URL `http://app_url/module_id`
-5) Module is ready
+4) Configure menu (see [Menu configuring](docs/ru/04-menu-configuration.md))
+5) Open URL `http://app_url/module_id`
+6) Module is ready
 
 ## Additional features
 In addition, it is proposed to connect the authorization and exit capability of the user.

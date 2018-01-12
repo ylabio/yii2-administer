@@ -37,8 +37,9 @@ php composer.phar require ylab/yii2-administer "*"
 2) К каждой модели из конфигурации присоединить поведение `CrudViewBehavior` (см.
 [Использование поведения CrudViewBehavior](docs/ru/02-crudviewbehavior-configuration.md))
 3) Настроить фильтрацию в модели для поиска (см. [Настройка фильтрации с помощью FilterQuery](docs/ru/03-filterquery.md))
-4) Открыть URL-адрес `http://app_url/module_id`
-5) Модуль готов к работе
+4) Настроить меню (см. [Настройка меню](docs/ru/04-menu-configuration.md))
+5) Открыть URL-адрес `http://app_url/module_id`
+6) Модуль готов к работе
 
 ## Дополнительные возможности
 Дополнительно предлагается подключить возможность авторизации и выхода пользователя.
