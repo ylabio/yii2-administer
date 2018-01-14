@@ -5,13 +5,11 @@
  */
 
 use dmstr\widgets\Alert;
-use dmstr\widgets\Menu;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\Breadcrumbs;
 use ylab\administer\assets\AssetBundle;
 use ylab\administer\widgets\ButtonsWidget;
-use ylab\administer\helpers\UserHelper;
 use ylab\administer\UserDataInterface;
 
 AssetBundle::register($this);
@@ -46,40 +44,16 @@ $title = $this->title === null ? \Yii::$app->name : $this->title . ' | ' . \Yii:
                 <div class="navbar-custom-menu">
 
                     <ul class="nav navbar-nav">
-                        <li class="dropdown user user-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <?php if ($this->context->module->getUserData()->getAvatar() !== null) {
-                                    echo Html::img($this->context->module->getUserData()->getAvatar(), [
-                                        'class' => 'user-image',
-                                        'alt' => 'User Image',
-                                    ]);
-                                } ?>
-                                <span class="hidden-xs"><?= $this->context->module->getUserData()->getUserName() ?></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <!-- User image -->
-                                <li class="user-header">
-                                    <?php if ($this->context->module->getUserData()->getAvatar() !== null) {
-                                        echo Html::img($this->context->module->getUserData()->getAvatar(), [
-                                            'class' => 'img-circle',
-                                            'alt' => 'User Image',
-                                        ]);
-                                    } ?>
-                                    <p>
-                                        <?= $this->context->module->getUserData()->getUserName() ?>
-                                    </p>
-                                </li>
-                                <!-- Menu Footer-->
-                                <li class="user-footer">
-                                    <div >
-                                        <?= Html::a(
-                                            Yii::t('app', 'Logout'),
-                                            ['user/logout'],
-                                            ['data-method' => 'post', 'class' => 'btn btn-default btn-flat', 'style' => 'margin-left: 100px']
-                                        ) ?>
-                                    </div>
-                                </li>
-                            </ul>
+                        <li><a><?= $this->context->module->getUserData()->getUserName() ?></a></li>
+                        <li>
+                            <?= Html::a(
+                                \yii\bootstrap\Html::icon('log-out'),
+                                ['user/logout'],
+                                [
+                                    'data-method' => 'post',
+                                    'title' => Yii::t('ylab/administer', 'Logout')
+                                ]
+                            ) ?>
                         </li>
                     </ul>
                 </div>
@@ -89,8 +63,8 @@ $title = $this->title === null ? \Yii::$app->name : $this->title . ' | ' . \Yii:
 
     <aside class="main-sidebar">
         <section class="sidebar">
-            <?= Menu::widget([
-                'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
+            <?= \ylab\administer\widgets\MenuWidget::widget([
+                'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
                 'items' => $this->context->module->getMenuItems(),
             ]) ?>
         </section>

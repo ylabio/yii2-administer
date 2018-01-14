@@ -10,4 +10,7 @@ return [
     'Are you sure you want to delete this item?' => 'Вы действительно хотите удалить этот элемент?',
     'Control panel' => 'Панель управления',
     'for application' => 'приложением',
+    'Sign in' => 'Войти',
+    'Sign in to start your session' => 'Требуется авторизация',
+    'Logout' => 'Выйти'
 ];
