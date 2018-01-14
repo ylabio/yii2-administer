@@ -2,6 +2,8 @@
 
 namespace ylab\administer\buttons;
 
+use Yii;
+
 /**
  * Class for button referenced to delete action.
  */
@@ -29,7 +31,7 @@ class DeleteButton extends AbstractButton
     {
         if (!isset($this->options['data'])) {
             $this->options['data'] = [
-                'confirm' => \Yii::t('ylab/administer', 'Are you sure you want to delete this item?'),
+                'confirm' => Yii::t('ylab/administer', 'Are you sure you want to delete this item?'),
                 'method' => 'POST',
             ];
         }
