@@ -2,7 +2,6 @@
 
 namespace ylab\administer\controllers;
 
-use yii\filters\AccessControl;
 use yii\web\Controller;
 use Yii;
 
@@ -47,6 +46,6 @@ class UserController extends Controller
      */
     public function getViewPath()
     {
-        return \Yii::getAlias('@ylab/administer/views');
+        return Yii::getAlias('@ylab/administer/views');
     }
 }
