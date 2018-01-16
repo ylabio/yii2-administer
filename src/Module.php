@@ -61,16 +61,21 @@ class Module extends \yii\base\Module
      * Example:
      * ```
      * [
-     *     [
-     *         'modelId' => 'post',
+     *     'options' => [
+     *         'class' => 'sidebar-menu',
      *     ],
-     *     [
-     *         'label' => 'Справочники',
-     *         'icon' => 'list',
-     *         'items' => [
-     *             ['modelId' => 'post-tags'],
+     *     'items' => [
+     *         [
+     *             'modelId' => 'post',
      *         ],
-     *     ],
+     *         [
+     *             'label' => 'Справочники',
+     *             'icon' => 'list',
+     *             'items' => [
+     *                 ['modelId' => 'post-tags'],
+     *             ],
+     *         ],
+     *     ]
      * ]
      * ```
      */
@@ -141,7 +146,7 @@ class Module extends \yii\base\Module
      */
     public function getMenuItems()
     {
-        $items = $this->getMenuItem($this->menuConfig);
+        $items = $this->getMenuItem(ArrayHelper::getValue($this->menuConfig, 'items', []));
         return $items;
     }
 
@@ -181,6 +186,16 @@ class Module extends \yii\base\Module
             ];
         }
         return $items;
+    }
+
+    /**
+     * Get options from `$menuConfig` for the `Menu` widget.
+     *
+     * @return array
+     */
+    public function getMenuOptions()
+    {
+        return ArrayHelper::getValue($this->menuConfig, 'options', []);
     }
 
     /**

@@ -5,12 +5,14 @@
  */
 
 use dmstr\widgets\Alert;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\Breadcrumbs;
 use ylab\administer\assets\AssetBundle;
 use ylab\administer\widgets\ButtonsWidget;
 use ylab\administer\UserDataInterface;
+use ylab\administer\widgets\MenuWidget;
 
 AssetBundle::register($this);
 $title = $this->title === null ? \Yii::$app->name : $this->title . ' | ' . \Yii::$app->name;
@@ -63,8 +65,14 @@ $title = $this->title === null ? \Yii::$app->name : $this->title . ' | ' . \Yii:
 
     <aside class="main-sidebar">
         <section class="sidebar">
-            <?= \ylab\administer\widgets\MenuWidget::widget([
-                'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
+            <?= MenuWidget::widget([
+                'options' => ArrayHelper::merge(
+                    [
+                        'class' => 'sidebar-menu tree',
+                        'data-widget' => 'tree',
+                    ],
+                    $this->context->module->getMenuOptions()
+                ),
                 'items' => $this->context->module->getMenuItems(),
             ]) ?>
         </section>
