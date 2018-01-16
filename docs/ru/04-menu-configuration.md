@@ -10,17 +10,22 @@
 Пример:
 ```php
 'menuConfig' => [
-     [
-         'modelId' => 'post',
-     ],
-     [
-         'label' => 'Справочники',
-         'icon' => 'list',
-         'items' => [
-             ['modelId' => 'post-tags'],
-             [
-                 'label' => 'Категории',
-                 'url' => 'post-categories',
+    'options' => [
+        'class' => 'sidebar-menu',
+    ],
+    'items' => [
+         [
+             'modelId' => 'post',
+         ],
+         [
+             'label' => 'Справочники',
+             'icon' => 'list',
+             'items' => [
+                 ['modelId' => 'post-tags'],
+                 [
+                     'label' => 'Категории',
+                     'url' => 'post-categories',
+                 ],
              ],
          ],
      ],

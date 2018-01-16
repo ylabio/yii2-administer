@@ -10,19 +10,24 @@ The model ID is the value of `url` from the configuration of the model.
 Example:
 ```php
 'menuConfig' => [
-     [
-         'modelId' => 'post',
+     'options' => [
+         'class' => 'sidebar-menu',
      ],
-     [
-         'label' => 'Directories',
-         'icon' => 'list',
-         'items' => [
-             ['modelId' => 'post-tags'],
-             [
-                 'label' => 'Categories',
-                 'url' => 'post-categories',
-             ],
-         ],
-     ],
+     'items' => [
+          [
+              'modelId' => 'post',
+          ],
+          [
+              'label' => 'Directories',
+              'icon' => 'list',
+              'items' => [
+                  ['modelId' => 'post-tags'],
+                  [
+                      'label' => 'Categories',
+                      'url' => 'post-categories',
+                  ],
+              ],
+          ],
+      ],
 ]
 ```
