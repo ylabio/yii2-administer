@@ -36,7 +36,6 @@ class ButtonsHelper
         'update' => [
             AbstractButton::TYPE_INDEX,
             AbstractButton::TYPE_CREATE,
-            AbstractButton::TYPE_VIEW,
             AbstractButton::TYPE_DELETE,
         ],
     ];
