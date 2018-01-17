@@ -17,7 +17,7 @@ class DeleteButton extends AbstractButton
      * @inheritdoc
      */
     public $options = [
-        'class' => 'btn btn-danger btn-flat glyphicon-trash',
+        'class' => 'btn btn-danger btn-right btn-flat glyphicon-trash',
     ];
     /**
      * @inheritdoc
