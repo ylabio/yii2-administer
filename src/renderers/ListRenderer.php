@@ -6,7 +6,7 @@ use yii\base\InvalidParamException;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\grid\ActionColumn;
-use yii\grid\GridView;
+use ylab\administer\widgets\GridView;
 use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
 use yii\validators\DateValidator;
@@ -161,6 +161,7 @@ class ListRenderer
         } else {
             $config['columns'][] = [
                 'class' => ActionColumn::class,
+                'template' => '{delete}',
                 'urlCreator' => function ($action, ActiveRecord $model) use ($url) {
                     return [
                         $action,
@@ -170,6 +171,7 @@ class ListRenderer
                 },
             ];
         }
+        $config['url'] = $url;
 
         if (isset($this->gridWidgetConfig['overwriteColumns'])) {
             unset($this->gridWidgetConfig['overwriteColumns']);
