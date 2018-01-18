@@ -4,9 +4,7 @@ namespace ylab\administer;
 
 use yii\base\Behavior;
 use yii\base\ModelEvent;
-use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\db\ActiveRecordInterface;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\validators\EmailValidator;
@@ -20,6 +18,7 @@ use ylab\administer\fields\NumberField;
 use ylab\administer\fields\StringField;
 use ylab\administer\helpers\BreadcrumbsHelper;
 use ylab\administer\helpers\ButtonsHelper;
+use ylab\administer\relations\RelationAutocompleteService;
 use ylab\administer\relations\RelationManager;
 use ylab\administer\renderers\DetailRenderer;
 use ylab\administer\renderers\FormRenderer;
@@ -96,6 +95,10 @@ class CrudViewBehavior extends Behavior
      * @var RelationManager
      */
     protected $relationManager;
+    /**
+     * @var AutocompleteServiceInterface
+     */
+    protected $relationAutocompleteService;
 
     /**
      * @inheritdoc
@@ -112,6 +115,7 @@ class CrudViewBehavior extends Behavior
             RelationManager::class,
             [$owner, $this->relations]
         );
+        $this->relationAutocompleteService = \Yii::createObject(RelationAutocompleteService::class, [$owner]);
     }
 
     /**
@@ -263,18 +267,7 @@ class CrudViewBehavior extends Behavior
      */
     public function getRelatedAutocompleteHintsData($relation, $keyAttribute, $labelAttribute, $q, $limit = 10)
     {
-        $rel = $this->owner->getRelation($relation);
-
-        if ($rel) {
-            $query = new ActiveQuery($rel->modelClass);
-            return $query
-                ->select([$keyAttribute, $labelAttribute])
-                ->andWhere(['like', $labelAttribute, $q])
-                ->limit($limit)
-                ->all();
-        }
-
-        return [];
+        return $this->relationAutocompleteService->getHints($relation, $keyAttribute, $labelAttribute, $q, $limit);
     }
 
     /**
