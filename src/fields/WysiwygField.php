@@ -9,6 +9,8 @@ use yii\helpers\Url;
 
 /**
  * Class for creation wysiwyg imperavi widget field.
+ *
+ * @see https://github.com/vova07/yii2-imperavi-widget
  */
 class WysiwygField extends BaseField
 {
@@ -34,9 +36,9 @@ class WysiwygField extends BaseField
                     'modelClass' => $this->modelUrl,
                     'field' => $this->field->attribute,
                 ]),
-                'plugins' => [
-                    'imagemanager' => 'vova07\imperavi\bundles\ImageManagerAsset',
-                ],
+            ],
+            'plugins' => [
+                'imagemanager' => 'vova07\imperavi\bundles\ImageManagerAsset',
             ],
         ]);
         return $this->field->widget(Widget::class, $options)->render();
