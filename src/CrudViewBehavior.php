@@ -115,7 +115,7 @@ class CrudViewBehavior extends Behavior
             RelationManager::class,
             [$owner, $this->relations]
         );
-        $this->relationAutocompleteService = \Yii::createObject(AutocompleteService::class, [$owner]);
+        $this->relationAutocompleteService = \Yii::createObject(AutocompleteServiceInterface::class, [$owner]);
     }
 
     /**
