@@ -10,7 +10,7 @@ use ylab\administer\AutocompleteServiceInterface;
 /**
  * Service of getting hints for relational autocomplete fields.
  */
-class RelationAutocompleteService implements AutocompleteServiceInterface
+class AutocompleteService implements AutocompleteServiceInterface
 {
     /**
      * @var ActiveRecord

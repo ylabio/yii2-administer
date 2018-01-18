@@ -18,7 +18,7 @@ use ylab\administer\fields\NumberField;
 use ylab\administer\fields\StringField;
 use ylab\administer\helpers\BreadcrumbsHelper;
 use ylab\administer\helpers\ButtonsHelper;
-use ylab\administer\relations\RelationAutocompleteService;
+use ylab\administer\relations\AutocompleteService;
 use ylab\administer\relations\RelationManager;
 use ylab\administer\renderers\DetailRenderer;
 use ylab\administer\renderers\FormRenderer;
@@ -115,7 +115,7 @@ class CrudViewBehavior extends Behavior
             RelationManager::class,
             [$owner, $this->relations]
         );
-        $this->relationAutocompleteService = \Yii::createObject(RelationAutocompleteService::class, [$owner]);
+        $this->relationAutocompleteService = \Yii::createObject(AutocompleteService::class, [$owner]);
     }
 
     /**
