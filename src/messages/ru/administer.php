@@ -12,5 +12,8 @@ return [
     'for application' => 'приложением',
     'Sign in' => 'Войти',
     'Sign in to start your session' => 'Требуется авторизация',
-    'Logout' => 'Выйти'
+    'Logout' => 'Выйти',
+    'Filter' => 'Фильтровать',
+    'Filters' => 'Фильтры',
+    'Clear' => 'Очистить',
 ];
