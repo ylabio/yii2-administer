@@ -36,7 +36,9 @@ For adding model in module, necessary take the following steps:
 1) Configure list of models of module (see [Module models configuration](docs/en/01-module-models-configuration.md))
 2) For every model attach `CrudViewBehavior` (see
 [CrudViewBehavior configuration](docs/en/02-crudviewbehavior-configuration.md))
-3) Configure filtering in the model for search (see [Using filtering with FilterQuery](docs/en/03-filterquery.md))
+3) Configure filtering in the model for search (there are two ways,
+see [Using filtering with FilterQuery](docs/en/03-filterquery.md)
+or [Advanced filtering settings](docs/en/05-advanced-filter.md)
 4) Configure menu (see [Menu configuring](docs/ru/04-menu-configuration.md))
 5) Open URL `http://app_url/module_id`
 6) Module is ready
