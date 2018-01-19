@@ -3,9 +3,10 @@
 namespace ylab\administer\renderers;
 
 use yii\base\InvalidParamException;
-use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\grid\ActionColumn;
+use ylab\administer\components\data\ActiveDataProvider;
+use ylab\administer\components\data\FilterModelInterface;
 use ylab\administer\widgets\GridView;
 use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
@@ -115,7 +116,10 @@ class ListRenderer
             'columns' => [],
         ];
 
-        if ($this->searchModel instanceof SearchModelInterface) {
+        if ($this->searchModel instanceof FilterModelInterface) {
+            $config['dataProvider'] = new ActiveDataProvider(['query' => $this->searchModel->getQuery()]);
+            $config['filterModel'] = $this->searchModel;
+        } elseif ($this->searchModel instanceof SearchModelInterface) {
             $config['dataProvider'] = $this->searchModel->search($params);
             $config['filterModel'] = $this->searchModel;
         } else {
