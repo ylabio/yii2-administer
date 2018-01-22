@@ -11,6 +11,7 @@ use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use yii\db\QueryInterface;
 use ylab\administer\components\data\operators\NotLikeFilterOperator;
+use ylab\administer\components\data\operators\RangeFilterOperator;
 
 /**
  * Class BaseFilter abstract class of filtering. This class encompasses the whole logic of working with classes
@@ -59,6 +60,9 @@ abstract class BaseFilter extends BaseObject implements FilterInterface
         ],
         '!=' => [
             'class' => NotEqualFilterOperator::class,
+        ],
+        'range' => [
+            'class' => RangeFilterOperator::class,
         ],
     ];
 
