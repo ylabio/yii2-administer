@@ -22,28 +22,40 @@ class JournalPageNewsSearch extends JournalPageNews implements FilterModelInterf
     {
         return [
             'title' => [
+                'class' => OperatorFilterInput::class,
                 'operators' => [
                     '~' => Yii::t('app', 'Содержит'),
                     '!~' => Yii::t('app', 'Не содержит'),
                 ],
             ],
             'is_published' => [
+                'class' => SelectFilterInput::class,
                 'values' => [
                     null => Yii::t('app', 'Любой'),
                     1 => Yii::t('app', 'Да'),
                     0 => Yii::t('app', 'Нет'),
                 ],
             ],
+            'published_at' => [
+                'class' => DateIntervalFilterInput::class,
+            ],
+            'tags_ids' => [
+                'class' => MultiSelectFilterInput::class,
+                'modelClass' => Tag::class,
+                'relationAttribute' => 'tags',
+                'operator' => 'in',
+            ],
         ];
     }
     
-    public function getQuery()
+    public function getDataProviderConfig()
     {
-        if (is_null($this->query)) {
-            $this->query = JournalPageNews::find()->where(['type' => static::TYPE_NEWS]);
-        }
-        
-        return $this->query;
+        return [
+            'query' => JournalPageNews::find()->where(['type' => static::TYPE_NEWS]),
+            'customFilterOperators' => [
+                'in' => EqualTaxonomyFilterOperator::class,
+            ]
+        ];
     }
 }
 ```

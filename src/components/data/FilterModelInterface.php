@@ -17,8 +17,8 @@ interface FilterModelInterface
     public function filters();
 
     /**
-     * Returns the ActiveQuery.
-     * @return ActiveQuery
+     * Returns array config for [[ylab\administer\components\data\ActiveDataProvider]].
+     * @return array
      */
-    public function getQuery();
+    public function getDataProviderConfig();
 }

@@ -1,0 +1,25 @@
+.filter-form {
+    padding: 20px;
+    position: absolute;
+    right: 0;
+    top: 70px;
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    z-index: 10;
+    display: none;
+}
+.form-control.input-half {
+    width: 150px;
+    float: left;
+}
+.filter-form-buttons-split {
+    padding: 8px;
+    clear: left;
+}
+.filters-header {
+    margin-top: 0;
+}
+.filter-toggle {
+    margin: 20px;
+    float: right;
+}

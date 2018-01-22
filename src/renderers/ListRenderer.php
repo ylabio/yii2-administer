@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 use yii\grid\ActionColumn;
 use ylab\administer\components\data\ActiveDataProvider;
 use ylab\administer\components\data\FilterModelInterface;
-use ylab\administer\widgets\GridView;
+use ylab\administer\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
 use yii\validators\DateValidator;
@@ -117,7 +117,8 @@ class ListRenderer
         ];
 
         if ($this->searchModel instanceof FilterModelInterface) {
-            $config['dataProvider'] = new ActiveDataProvider(['query' => $this->searchModel->getQuery()]);
+            $searchModel = $this->searchModel;
+            $config['dataProvider'] = new ActiveDataProvider($this->searchModel->getDataProviderConfig());
             $config['filterModel'] = $this->searchModel;
         } elseif ($this->searchModel instanceof SearchModelInterface) {
             $config['dataProvider'] = $this->searchModel->search($params);

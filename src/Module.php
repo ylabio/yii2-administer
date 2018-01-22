@@ -8,6 +8,7 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use yii\i18n\PhpMessageSource;
 use Yii;
+use ylab\administer\relations\AutocompleteService;
 
 /**
  * @inheritdoc
@@ -89,6 +90,7 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
+        $this->registerDI();
         $this->registerTranslations();
         Yii::$app->user->loginUrl = [$this->id . '/user/login'];
         $urlManager = \Yii::$app->getUrlManager();
@@ -264,6 +266,16 @@ class Module extends \yii\base\Module
                     'ylab/administer' => 'administer.php',
                 ],
             ];
+        }
+    }
+
+    /**
+     * Register classes in DI.
+     */
+    protected function registerDI()
+    {
+        if (!Yii::$container->has(AutocompleteServiceInterface::class)) {
+            Yii::$container->set(AutocompleteServiceInterface::class, AutocompleteService::class);
         }
     }
 }
