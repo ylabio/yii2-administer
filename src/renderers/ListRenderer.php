@@ -123,8 +123,10 @@ class ListRenderer
         } elseif ($this->searchModel instanceof SearchModelInterface) {
             $config['dataProvider'] = $this->searchModel->search($params);
             $config['filterModel'] = $this->searchModel;
+            $config['filterPosition'] = GridView::FILTER_POS_BODY;
         } else {
             $config['dataProvider'] = new ActiveDataProvider(['query' => $model::find()]);
+            $config['filterPosition'] = GridView::FILTER_POS_BODY;
         }
 
         if (isset($this->gridWidgetConfig['overwriteColumns'][$this->serialColumnField])) {
