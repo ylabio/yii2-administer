@@ -12,7 +12,7 @@ use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
 use yii\validators\DateValidator;
 use ylab\administer\grid\BaseFilterInput;
-use ylab\administer\grid\DateIntervalFilterInput;
+use ylab\administer\grid\filter\base\DateIntervalFilterInput;
 use ylab\administer\SearchModelInterface;
 
 /**

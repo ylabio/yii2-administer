@@ -144,10 +144,7 @@ class CrudController extends Controller
 
         $model = ModelHelper::createModel($modelClass);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect([
-                'index',
-                'modelClass' => $this->modelConfig['url'],
-            ]);
+            return $this->insertUpdateRedirect($model);
         }
 
         return $this->render('create', [
@@ -177,10 +174,7 @@ class CrudController extends Controller
 
         $model = ModelHelper::findModel($modelClass, $id);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect([
-                'index',
-                'modelClass' => $this->modelConfig['url'],
-            ]);
+            return $this->insertUpdateRedirect($model);
         }
         return $this->render('update', [
             'form' => $model->renderForm($this->modelConfig['url']),
@@ -215,5 +209,24 @@ class CrudController extends Controller
         return $this->redirect(['index', 'modelClass' => $this->modelConfig['url']]);
     }
 
-
+    /**
+     * Redirection depending on the button "Apply" or "Save".
+     *
+     * @param $model
+     * @return Response
+     */
+    private function insertUpdateRedirect($model)
+    {
+        if (\Yii::$app->request->post('apply') == 1) {
+            return $this->redirect([
+                'update',
+                'modelClass' => $this->modelConfig['url'],
+                'id' => $model->id,
+            ]);
+        }
+        return $this->redirect([
+            'index',
+            'modelClass' => $this->modelConfig['url'],
+        ]);
+    }
 }
