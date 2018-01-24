@@ -142,7 +142,7 @@ class Module extends \yii\base\Module
                     [
                         'controllers' => ['admin/api', 'admin/crud'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => [$this->getAccessControl()->defaultRole],
                     ],
                 ],
             ]
