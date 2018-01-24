@@ -8,6 +8,8 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use yii\i18n\PhpMessageSource;
 use Yii;
+use ylab\administer\components\access\AccessControl;
+use ylab\administer\components\access\BaseAccessControl;
 use ylab\administer\relations\AutocompleteService;
 
 /**
@@ -81,6 +83,25 @@ class Module extends \yii\base\Module
      * ```
      */
     public $menuConfig = [];
+    /**
+     * @var array
+     *
+     * Example:
+     * ```php
+     * [
+     *     'defaultRole' => 'admin',
+     *     'rules' => [
+     *         'post' => ['contentManager', 'admin'],
+     *         'post-tags' => [],
+     *     ],
+     * ]
+     * ```
+     */
+    public $access = [];
+    /**
+     * @var BaseAccessControl
+     */
+    protected $accessControl;
 
     private $userData;
 
@@ -93,23 +114,9 @@ class Module extends \yii\base\Module
         $this->registerDI();
         $this->registerTranslations();
         Yii::$app->user->loginUrl = [$this->id . '/user/login'];
-        $urlManager = \Yii::$app->getUrlManager();
-        $rules = [];
-        if ($this->getUserData() !== null) {
-            $rules["$this->urlPrefix/logout"] = "$this->id/user/logout";
-            if ($this->getUserData()->getLoginForm() !== null) {
-                $rules["$this->urlPrefix/login"] = "$this->id/user/login";
-            }
-        }
-        $rules = ArrayHelper::merge($rules, [
-            "$this->urlPrefix" => "$this->id/crud/default",
-            "$this->urlPrefix/<modelClass:[\\w-]+>" => "$this->id/crud/index",
-            "$this->urlPrefix/<modelClass:[\\w-]+>/<action:(autocomplete)>/<id:\\d+>" => "$this->id/api/<action>",
-            "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>" => "$this->id/crud/<action>",
-            "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>/<id:\\d+>" => "$this->id/crud/<action>",
-        ]);
-        $urlManager->addRules($rules);
+        $this->configureUrlManager();
         $this->normalizeModelsConfig();
+        $this->configureAccessControl();
     }
 
     /**
@@ -148,8 +155,7 @@ class Module extends \yii\base\Module
      */
     public function getMenuItems()
     {
-        $items = $this->getMenuItem(ArrayHelper::getValue($this->menuConfig, 'items', []));
-        return $items;
+        return $this->getMenuItem(ArrayHelper::getValue($this->menuConfig, 'items', []));
     }
 
     /**
@@ -215,6 +221,14 @@ class Module extends \yii\base\Module
     }
 
     /**
+     * @return BaseAccessControl
+     */
+    public function getAccessControl()
+    {
+        return $this->accessControl;
+    }
+
+    /**
      * Make config valid, set unspecified fields to default values.
      *
      * @throws InvalidConfigException
@@ -277,5 +291,43 @@ class Module extends \yii\base\Module
         if (!Yii::$container->has(AutocompleteServiceInterface::class)) {
             Yii::$container->set(AutocompleteServiceInterface::class, AutocompleteService::class);
         }
+    }
+
+    /**
+     * Configure url manager of application.
+     */
+    protected function configureUrlManager()
+    {
+        $urlManager = \Yii::$app->getUrlManager();
+        $rules = [];
+
+        if ($this->getUserData() !== null) {
+            $rules["$this->urlPrefix/logout"] = "$this->id/user/logout";
+            if ($this->getUserData()->getLoginForm() !== null) {
+                $rules["$this->urlPrefix/login"] = "$this->id/user/login";
+            }
+        }
+
+        $rules = ArrayHelper::merge($rules, [
+            "$this->urlPrefix" => "$this->id/crud/default",
+            "$this->urlPrefix/<modelClass:[\\w-]+>" => "$this->id/crud/index",
+            "$this->urlPrefix/<modelClass:[\\w-]+>/<action:(autocomplete)>/<id:\\d+>" => "$this->id/api/<action>",
+            "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>" => "$this->id/crud/<action>",
+            "$this->urlPrefix/<modelClass:[\\w-]+>/<action:[\\w-]+>/<id:\\d+>" => "$this->id/crud/<action>",
+        ]);
+
+        $urlManager->addRules($rules);
+    }
+
+    /**
+     * Configure of access control component.
+     */
+    protected function configureAccessControl()
+    {
+        $accessConfig = ArrayHelper::merge(
+            ['class' => AccessControl::class],
+            $this->access
+        );
+        $this->accessControl = Yii::createObject($accessConfig);
     }
 }

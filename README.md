@@ -43,6 +43,29 @@ or [Advanced filtering settings](docs/en/05-advanced-filter.md)
 5) Open URL `http://app_url/module_id`
 6) Module is ready
 
+## Access control
+
+To configure access to the module and actions on the model, you must use the `access` module property.  
+By default, any user who has logged on has access to the module.  
+
+Access to the module is configured in `defaultRole` using the special roles `?` and `@` or the role/permission name if RBAC is used.  
+
+Access to actions on the model is configured in `rules` by roles, for check access use the call `\yii\web\User::can()`. 
+To access the action, the user must have access to the module.
+  
+The parameter `rules` has the format "key => value", where the `key` is the url of the model, and the `value` is the list of roles.  
+ 
+Example of configuration:
+```php
+'access' => [
+    'defaultRole' => 'admin',
+    'rules' => [
+        'post' => ['contentManager', 'admin'],
+        'post-tags' => [],
+    ],
+],
+```
+
 ## Additional features
 In addition, it is proposed to connect the authorization and exit capability of the user.
 

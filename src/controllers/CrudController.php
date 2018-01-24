@@ -94,6 +94,8 @@ class CrudController extends Controller
      */
     public function actionIndex($modelClass)
     {
+        $this->module->getAccessControl()->checkAccess($this->action->id, $this->modelConfig['url']);
+
         $model = ModelHelper::createModel($modelClass);
         return $this->render('index', [
             'gridView' => $model->renderGrid(\Yii::$app->getRequest()->getQueryParams(), $this->modelConfig['url']),
@@ -113,6 +115,8 @@ class CrudController extends Controller
      */
     public function actionView($modelClass, $id)
     {
+        $this->module->getAccessControl()->checkAccess($this->action->id, $this->modelConfig['url']);
+
         $model = ModelHelper::findModel($modelClass, $id);
         return $this->render('view', [
             'detailView' => $model->renderDetailView(),
@@ -136,6 +140,8 @@ class CrudController extends Controller
      */
     public function actionCreate($modelClass)
     {
+        $this->module->getAccessControl()->checkAccess($this->action->id, $this->modelConfig['url']);
+
         $model = ModelHelper::createModel($modelClass);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
@@ -167,6 +173,8 @@ class CrudController extends Controller
      */
     public function actionUpdate($modelClass, $id)
     {
+        $this->module->getAccessControl()->checkAccess($this->action->id, $this->modelConfig['url']);
+
         $model = ModelHelper::findModel($modelClass, $id);
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
             return $this->redirect([
@@ -201,6 +209,8 @@ class CrudController extends Controller
      */
     public function actionDelete($modelClass, $id)
     {
+        $this->module->getAccessControl()->checkAccess($this->action->id, $this->modelConfig['url']);
+
         ModelHelper::findModel($modelClass, $id)->delete();
         return $this->redirect(['index', 'modelClass' => $this->modelConfig['url']]);
     }
