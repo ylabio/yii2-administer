@@ -4,11 +4,11 @@
  * @var string $detailView
  * @var string $title
  * @var array $breadcrumbs
- * @var AbstractButton[] $buttons
+ * @var Button[] $buttons
  */
 
 use yii\web\View;
-use ylab\administer\buttons\AbstractButton;
+use ylab\administer\buttons\Button;
 
 $this->title = $title;
 $this->params['breadcrumbs'] = $breadcrumbs;

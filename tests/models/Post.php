@@ -4,7 +4,7 @@ namespace tests\models;
 
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
-use ylab\administer\buttons\AbstractButton;
+use ylab\administer\buttons\CrudButton;
 use ylab\administer\CrudViewBehavior;
 use ylab\administer\FormField;
 use ylab\administer\renderers\FormRenderer;
@@ -61,7 +61,7 @@ class Post extends ActiveRecord
                     ],
                 ],
                 'buttonsConfig' => [
-                    AbstractButton::TYPE_INDEX => [
+                    CrudButton::TYPE_INDEX => [
                         'text' => 'Button',
                         'options' => ['class' => 'btn btn-danger'],
                     ],

@@ -5,7 +5,7 @@ namespace ylab\administer\buttons;
 /**
  * Class for button referenced to update action.
  */
-class UpdateButton extends AbstractButton
+class UpdateButton extends CrudButton
 {
     /**
      * @inheritdoc

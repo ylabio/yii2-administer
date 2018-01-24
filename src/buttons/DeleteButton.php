@@ -7,7 +7,7 @@ use Yii;
 /**
  * Class for button referenced to delete action.
  */
-class DeleteButton extends AbstractButton
+class DeleteButton extends CrudButton
 {
     /**
      * @inheritdoc

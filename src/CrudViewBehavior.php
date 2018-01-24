@@ -45,7 +45,7 @@ use ylab\administer\renderers\ListRenderer;
  *                 ],
  *             ],
  *            'buttonsConfig' => [
- *                AbstractButton::TYPE_CREATE => [
+ *                CrudButton::TYPE_CREATE => [
  *                    'text' => 'Add Post',
  *                    'options' => [
  *                        'class' => 'btn btn-danger',

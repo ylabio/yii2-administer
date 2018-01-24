@@ -67,9 +67,9 @@ class FormRenderer
             echo $formField->render($options);
         }
         echo Html::submitButton(
-                \Yii::t('ylab/administer', $model->isNewRecord ? 'Create' : 'Save'),
-                ['class' => 'btn btn-success btn-flat glyphicon-ok']
-            )
+            \Yii::t('ylab/administer', $model->isNewRecord ? 'Create' : 'Save'),
+            ['class' => 'btn btn-success btn-flat glyphicon-ok']
+        )
             . ' '
             . Html::submitButton(
                 \Yii::t('ylab/administer', 'Apply'),

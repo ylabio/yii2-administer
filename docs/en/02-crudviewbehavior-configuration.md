@@ -140,7 +140,7 @@ with additional property:
 Each item of array must be as following:
 ```php
 'buttonsConfig' => [
-    \ylab\administer\buttons\AbstractButton::TYPE_CREATE => [
+    \ylab\administer\buttons\CrudButton::TYPE_CREATE => [
         'text' => 'Add Post',
         'action' => 'create',
         'options' => [
@@ -154,9 +154,12 @@ where,
 - `action` - action of controller for link
 - `options` - additional button HTML-attributes
 
-There are 5 types of buttons:
-- `\ylab\administer\buttons\AbstractButton::TYPE_INDEX`
-- `\ylab\administer\buttons\AbstractButton::TYPE_VIEW`
-- `\ylab\administer\buttons\AbstractButton::TYPE_CREATE`
-- `\ylab\administer\buttons\AbstractButton::TYPE_UPDATE`
-- `\ylab\administer\buttons\AbstractButton::TYPE_DELETE`
+There are 5 types of buttons for CRUD:
+- `\ylab\administer\buttons\CrudButton::TYPE_INDEX`
+- `\ylab\administer\buttons\CrudButton::TYPE_VIEW`
+- `\ylab\administer\buttons\CrudButton::TYPE_CREATE`
+- `\ylab\administer\buttons\CrudButton::TYPE_UPDATE`
+- `\ylab\administer\buttons\CrudButton::TYPE_DELETE`
+
+There is also a button for displaying the advanced filtering form:
+- `\ylab\administer\buttons\AdvancedFilterButton::TYPE_INDEX`

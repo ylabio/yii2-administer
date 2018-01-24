@@ -3,7 +3,8 @@
 namespace ylab\administer\helpers;
 
 use yii\base\InvalidCallException;
-use ylab\administer\buttons\AbstractButton;
+use ylab\administer\buttons\AdvancedFilterButton;
+use ylab\administer\buttons\CrudButton;
 use ylab\administer\buttons\CreateButton;
 use ylab\administer\buttons\DeleteButton;
 use ylab\administer\buttons\IndexButton;
@@ -22,21 +23,22 @@ class ButtonsHelper
      */
     protected static $buttonsMap = [
         'index' => [
-            AbstractButton::TYPE_CREATE,
+            CrudButton::TYPE_CREATE,
+            AdvancedFilterButton::TYPE_ADVANCED_FILTER,
         ],
         'view' => [
-            AbstractButton::TYPE_INDEX,
-            AbstractButton::TYPE_CREATE,
-            AbstractButton::TYPE_UPDATE,
-            AbstractButton::TYPE_DELETE,
+            CrudButton::TYPE_INDEX,
+            CrudButton::TYPE_CREATE,
+            CrudButton::TYPE_UPDATE,
+            CrudButton::TYPE_DELETE,
         ],
         'create' => [
-            AbstractButton::TYPE_INDEX,
+            CrudButton::TYPE_INDEX,
         ],
         'update' => [
-            AbstractButton::TYPE_INDEX,
-            AbstractButton::TYPE_CREATE,
-            AbstractButton::TYPE_DELETE,
+            CrudButton::TYPE_INDEX,
+            CrudButton::TYPE_CREATE,
+            CrudButton::TYPE_DELETE,
         ],
     ];
 
@@ -72,21 +74,23 @@ class ButtonsHelper
      * @param string $type
      * @param array $urlParams
      * @param array $config
-     * @return AbstractButton
+     * @return CrudButton
      */
     protected function createButton($type, $urlParams, $config)
     {
         switch ($type) {
-            case AbstractButton::TYPE_INDEX:
+            case CrudButton::TYPE_INDEX:
                 return new IndexButton($urlParams, $config);
-            case AbstractButton::TYPE_VIEW:
+            case CrudButton::TYPE_VIEW:
                 return new ViewButton($urlParams, $config);
-            case AbstractButton::TYPE_CREATE:
+            case CrudButton::TYPE_CREATE:
                 return new CreateButton($urlParams, $config);
-            case AbstractButton::TYPE_UPDATE:
+            case CrudButton::TYPE_UPDATE:
                 return new UpdateButton($urlParams, $config);
-            case AbstractButton::TYPE_DELETE:
+            case CrudButton::TYPE_DELETE:
                 return new DeleteButton($urlParams, $config);
+            case AdvancedFilterButton::TYPE_ADVANCED_FILTER:
+                return new AdvancedFilterButton($config);
             default:
                 throw new InvalidCallException("Undefined button type: $type.");
         }

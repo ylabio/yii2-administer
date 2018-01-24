@@ -5,7 +5,7 @@ namespace ylab\administer\buttons;
 /**
  * Class for button referenced to view action.
  */
-class ViewButton extends AbstractButton
+class ViewButton extends CrudButton
 {
     /**
      * @inheritdoc
