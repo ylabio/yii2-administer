@@ -60,11 +60,8 @@ class GridView extends BaseGridView
             foreach ($this->filterModel->filters() as $attribute => $params) {
                 $cells[] = $this->renderFilterCell($attribute, $params);
             }
-            $filterButton = Html::button(Yii::t('ylab/administer', 'Filters'), [
-                'class' => 'btn btn-success btn-flat filter-toggle',
-            ]);
 
-            return $filterButton . Html::tag(
+            return Html::tag(
                 'div',
                 Html::tag('h3', Yii::t('ylab/administer', 'Filters'), ['class' => 'filters-header'])
                     . Html::beginForm(['/admin/crud/index', 'modelClass' => $this->url], 'get')

@@ -144,7 +144,7 @@
 Каждый элемент массива должен выглядеть следующим образом:
 ```php
 'buttonsConfig' => [
-    \ylab\administer\buttons\AbstractButton::TYPE_CREATE => [
+    \ylab\administer\buttons\CrudButton::TYPE_CREATE => [
         'text' => 'Add Post',
         'action' => 'create',
         'options' => [
@@ -158,9 +158,13 @@
 - `action` - экшн контроллера для ссылки
 - `options` - дополнительные HTML-атрибуты кнопки
 
-Всего есть 5 типов кнопок:
-- `\ylab\administer\buttons\AbstractButton::TYPE_INDEX`
-- `\ylab\administer\buttons\AbstractButton::TYPE_VIEW`
-- `\ylab\administer\buttons\AbstractButton::TYPE_CREATE`
-- `\ylab\administer\buttons\AbstractButton::TYPE_UPDATE`
-- `\ylab\administer\buttons\AbstractButton::TYPE_DELETE`
+Всего есть 5 типов кнопок для CRUD:
+- `\ylab\administer\buttons\CrudButton::TYPE_INDEX`
+- `\ylab\administer\buttons\CrudButton::TYPE_VIEW`
+- `\ylab\administer\buttons\CrudButton::TYPE_CREATE`
+- `\ylab\administer\buttons\CrudButton::TYPE_UPDATE`
+- `\ylab\administer\buttons\CrudButton::TYPE_DELETE`
+
+Также имеется кнопка для вывода формы продвинутой фильтрации:
+- `\ylab\administer\buttons\AdvancedFilterButton::TYPE_INDEX`
+

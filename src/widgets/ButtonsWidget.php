@@ -3,7 +3,7 @@
 namespace ylab\administer\widgets;
 
 use yii\base\Widget;
-use ylab\administer\buttons\AbstractButton;
+use ylab\administer\buttons\Button;
 
 /**
  * Class for rendering buttons.
@@ -11,7 +11,7 @@ use ylab\administer\buttons\AbstractButton;
 class ButtonsWidget extends Widget
 {
     /**
-     * @var AbstractButton[]
+     * @var Button[]
      */
     public $buttons = [];
 

@@ -5,7 +5,7 @@ namespace ylab\administer\buttons;
 /**
  * Class for button referenced to index action.
  */
-class IndexButton extends AbstractButton
+class IndexButton extends CrudButton
 {
     /**
      * @inheritdoc

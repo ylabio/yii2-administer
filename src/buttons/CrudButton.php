@@ -6,9 +6,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * AbstractButton class which contain default button logic.
+ * CrudButton class which contain default button logic for CRUD.
  */
-class AbstractButton
+class CrudButton extends Button
 {
     /**
      * @var string
@@ -32,18 +32,6 @@ class AbstractButton
     const TYPE_DELETE = 'delete';
 
     /**
-     * Button text
-     *
-     * @var string
-     */
-    public $text;
-    /**
-     * Button HTML options.
-     *
-     * @var array
-     */
-    public $options = [];
-    /**
      * Button url action.
      *
      * @var string
@@ -58,14 +46,14 @@ class AbstractButton
     protected $urlParams;
 
     /**
-     * AbstractButton constructor.
+     * CrudButton constructor.
      * @param array $urlParams
      * @param array $config
      */
     public function __construct(array $urlParams, array $config)
     {
         $this->urlParams = $urlParams;
-        \Yii::configure($this, $config);
+        parent::__construct($config);
     }
 
     /**
@@ -83,19 +71,6 @@ class AbstractButton
     }
 
     /**
-     * Get button text.
-     *
-     * @return string
-     */
-    protected function getText()
-    {
-        if ($this->text !== null) {
-            return \Yii::t('ylab/administer', $this->text);
-        }
-        return '';
-    }
-
-    /**
      * Get button url.
      *
      * @return array
@@ -103,15 +78,5 @@ class AbstractButton
     protected function getUrl()
     {
         return ArrayHelper::merge([$this->action], $this->urlParams);
-    }
-
-    /**
-     * Get button HTML options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return $this->options;
     }
 }
