@@ -6,6 +6,7 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use ylab\administer\fields\BaseField;
 
@@ -66,9 +67,26 @@ class FormRenderer
             echo $formField->render($options);
         }
         echo Html::submitButton(
-            \Yii::t('ylab/administer', $model->isNewRecord ? 'Create' : 'Save'),
-            ['class' => 'btn btn-success btn-flat glyphicon-ok']
-        );
+                \Yii::t('ylab/administer', $model->isNewRecord ? 'Create' : 'Save'),
+                ['class' => 'btn btn-success btn-flat glyphicon-ok']
+            )
+            . ' '
+            . Html::submitButton(
+                \Yii::t('ylab/administer', 'Apply'),
+                [
+                    'class' => 'btn btn-success btn-flat glyphicon-ok',
+                    'name' => 'apply',
+                    'value' => 1,
+                ]
+            )
+            . ' '
+            . Html::button(
+                \Yii::t('ylab/administer', 'Cancel'),
+                [
+                    'class' => 'btn btn-danger btn-flat',
+                    'onclick' => 'javascript:window.location.href = "' . Url::to(['/admin/crud/index', 'modelClass' => $modelUrl]) . '"',
+                ]
+            );
         ActiveForm::end();
         return ob_get_clean();
     }
