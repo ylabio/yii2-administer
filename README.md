@@ -45,16 +45,12 @@ or [Advanced filtering settings](docs/en/05-advanced-filter.md)
 
 ## Access control
 
-To configure access to the module and actions on the model, you must use the `access` module property.  
-By default, any user who has logged on has access to the module.  
+To configure access, you must define the `access` property in the module configuration, which must have the following structure:
 
-Access to the module is configured in `defaultRole` using the special roles `?` and `@` or the role/permission name if RBAC is used.  
+- defaultRole: string, the role name used to configure the access control filter `\yii\filters\AccessControl`. Applies to crud and api controllers.
+- rules: array, each element must contain the url model as the key and an array of roles as the value. 
+To check the roles, the call to `\yii\web\User::can()` will be used.
 
-Access to actions on the model is configured in `rules` by roles, for check access use the call `\yii\web\User::can()`. 
-To access the action, the user must have access to the module.
-  
-The parameter `rules` has the format "key => value", where the `key` is the url of the model, and the `value` is the list of roles.  
- 
 Example of configuration:
 ```php
 'access' => [
