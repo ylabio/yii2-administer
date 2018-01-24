@@ -2,6 +2,7 @@
 
 namespace ylab\administer;
 
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -172,6 +173,7 @@ class Module extends \yii\base\Module
             $label = ArrayHelper::getValue($element, 'label');
             $icon = ArrayHelper::getValue($element, 'icon');
             $url = ArrayHelper::getValue($element, 'url');
+            $visible = true;
 
             // getting values from configuration of model
             if (isset($element['modelId'])) {
@@ -184,16 +186,44 @@ class Module extends \yii\base\Module
                 $label = $label ?: $modelConfig['labels'][0];
                 $icon = $icon ?: $modelConfig['menuIcon'];
                 $url = $url ?: ['index', 'modelClass' => $modelConfig['url']];
+                try {
+                    $this->getAccessControl()->checkAccess('index', $modelConfig['url']);
+                } catch (Exception $e) {
+                    $visible = false;
+                }
+            }
+
+            $subitems = isset($element['items']) ? $this->getMenuItem($element['items']) : null;
+
+            if ($subitems !== null) {
+                // checking count of visible subitems
+                $visibleSubitems = array_filter($subitems, [$this, 'filterVisibleMenuItems']);
+                if (count($visibleSubitems) < 1) {
+                    // disable visibility of item if it has not visible subitems
+                    $visible = false;
+                }
             }
 
             $items[] = [
                 'label' => $label,
                 'icon' => $icon,
                 'url' => $url ?: '#',
-                'items' => isset($element['items']) ? $this->getMenuItem($element['items']) : null,
+                'items' => $subitems,
+                'visible' => $visible,
             ];
         }
         return $items;
+    }
+
+    /**
+     * Filters visible menu items.
+     *
+     * @param array $item
+     * @return bool
+     */
+    protected function filterVisibleMenuItems($item)
+    {
+        return is_array($item) && !empty($item) && $item['visible'];
     }
 
     /**
