@@ -43,6 +43,25 @@ or [Advanced filtering settings](docs/en/05-advanced-filter.md)
 5) Open URL `http://app_url/module_id`
 6) Module is ready
 
+## Access control
+
+To configure access, you must define the `access` property in the module configuration, which must have the following structure:
+
+- defaultRole: string, the role name used to configure the access control filter `\yii\filters\AccessControl`. Applies to crud and api controllers.
+- rules: array, each element must contain the url model as the key and an array of roles as the value. 
+To check the roles, the call to `\yii\web\User::can()` will be used.
+
+Example of configuration:
+```php
+'access' => [
+    'defaultRole' => 'admin',
+    'rules' => [
+        'post' => ['contentManager', 'admin'],
+        'post-tags' => [],
+    ],
+],
+```
+
 ## Additional features
 In addition, it is proposed to connect the authorization and exit capability of the user.
 
