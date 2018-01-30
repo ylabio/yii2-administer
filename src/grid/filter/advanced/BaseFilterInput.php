@@ -23,6 +23,11 @@ abstract class BaseFilterInput
     public $modelUrl;
 
     /**
+     * @var array Options.
+     */
+    public $options = [];
+
+    /**
      * Get the Attribute parameter as an array.
      *
      * @return string
@@ -31,12 +36,12 @@ abstract class BaseFilterInput
     {
         return $this->filterParam . '[' . $this->attribute . ']';
     }
-    
+
     /**
      * Returns filter as string.
      *
      * @param array $options
      * @return string
      */
-    abstract public function render(array $options = []);
+    abstract public function render();
 }

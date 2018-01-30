@@ -16,11 +16,11 @@ class DateIntervalFilterInput extends OperatorFilterInput
     /**
      * @inheritdoc
      */
-    public function render(array $options = [])
+    public function render()
     {
         $val = ArrayHelper::getValue(\Yii::$app->request->getQueryParam($this->filterParam), $this->attribute);
         $options = ArrayHelper::merge(
-            $options,
+            $this->options,
             [
                 'name' => $this->getAttribute(),
                 'value' => ArrayHelper::getValue(\Yii::$app->request->getQueryParam($this->filterParam), $this->attribute),

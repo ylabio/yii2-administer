@@ -14,11 +14,11 @@ class SelectFilterInput extends BaseFilterInput
      * @var array Values for dropdown menu.
      */
     public $values = [];
-    
+
     /**
      * @inheritdoc
      */
-    public function render(array $options = [])
+    public function render()
     {
         return Html::dropDownList(
             $this->getAttribute(),

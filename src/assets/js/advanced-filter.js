@@ -8,5 +8,13 @@ $('.clear-filters').on('click', function (e) {
     });
 });
 $('.filter-toggle').on('click', function () {
-    $('.filter-form').toggle();
+    $('body').prepend('<div id="mask"></div>');
+    $('#mask').fadeIn(300);
+    $('.filter-form').show();
+});
+$('body').on('click', '#mask', function () {
+    $('.filter-form').hide();
+    $('#mask').fadeOut(300, function () {
+        $(this).remove();
+    });
 });

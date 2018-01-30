@@ -34,8 +34,9 @@ class MultiSelectFilterInput extends OperatorFilterInput
     /**
      * @inheritdoc
      */
-    public function render(array $options = [])
+    public function render()
     {
+        $options = $this->options;
         $relation = $this->relationAttribute;
         $key = ArrayHelper::remove($options, 'keyAttribute', 'id');
         $label = ArrayHelper::remove($options, 'labelAttribute', 'title');

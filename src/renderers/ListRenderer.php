@@ -11,7 +11,7 @@ use ylab\administer\grid\GridView;
 use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
 use yii\validators\DateValidator;
-use ylab\administer\grid\BaseFilterInput;
+use ylab\administer\grid\filter\advanced\BaseFilterInput;
 use ylab\administer\grid\filter\base\DateIntervalFilterInput;
 use ylab\administer\SearchModelInterface;
 
