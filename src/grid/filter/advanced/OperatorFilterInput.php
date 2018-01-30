@@ -19,20 +19,20 @@ class OperatorFilterInput extends BaseFilterInput
      * @var array An array of operators to be substituted in drop down list.
      */
     public $operators = [];
-    
+
     /**
      * @inheritdoc
      */
-    public function render(array $options = [])
+    public function render()
     {
         $fieldNameOperator = $this->operatorParam . '[' . $this->attribute . ']';
-        
+
         return Html::dropDownList(
-            $fieldNameOperator,
-            ArrayHelper::getValue(\Yii::$app->request->getQueryParam($this->operatorParam), $this->attribute),
-            $this->operators,
-            ['class' => 'form-control input-half']
-        )
+                $fieldNameOperator,
+                ArrayHelper::getValue(\Yii::$app->request->getQueryParam($this->operatorParam), $this->attribute),
+                $this->operators,
+                ['class' => 'form-control input-half']
+            )
             . Html::textInput(
                 $this->getAttribute(),
                 ArrayHelper::getValue(\Yii::$app->request->getQueryParam($this->filterParam), $this->attribute),
