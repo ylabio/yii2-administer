@@ -6,10 +6,13 @@ $('.clear-filters').on('click', function (e) {
     $(this).closest('form').find('select').each(function () {
         $(this).val($(this).find('option:first').val());
     });
+    $('.select2-hidden-accessible').val(null).trigger('change');
 });
 $('.filter-toggle').on('click', function () {
     $('body').prepend('<div id="mask"></div>');
-    $('#mask').fadeIn(300);
+    let mask = $('#mask');
+    mask.css({width: $(document).width() + 'px', height: $(document).height() + 'px'});
+    mask.fadeIn(300);
     $('.filter-form').show();
 });
 $('body').on('click', '#mask', function () {
