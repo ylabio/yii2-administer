@@ -31,7 +31,6 @@ class RelationalAutocompleteField extends BaseField
         $key = ArrayHelper::remove($options, 'keyAttribute', 'id');
         $label = ArrayHelper::remove($options, 'labelAttribute');
         $defaultOptions = [
-//            'initValueText' => ArrayHelper::getValue($this->field, "model.{$relation}.{$label}"),
             'data' => ArrayHelper::map($this->field->model->{$relation}, $key, $label),
             'options' => [
                 'multiple' => true,
@@ -45,9 +44,6 @@ class RelationalAutocompleteField extends BaseField
                     'data' => new JsExpression('function(params) { return {q:params.term}; }'),
                 ],
                 'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                // display correct initial values with default settings
-//                'templateResult' => new JsExpression('function(item) { return item.' . $label . '; }'),
-//                'templateSelection' => new JsExpression('function (item) { return item.' . $label . '; }'),
             ],
         ];
         return ArrayHelper::merge($defaultOptions, $options);

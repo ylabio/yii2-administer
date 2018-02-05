@@ -34,8 +34,9 @@ class ApiController extends Controller
      * @param string $label Attribute name for display use
      * @param string $q Query text from user input
      * @return ArrayDataProvider
+     * @throws \yii\web\NotFoundHttpException
      */
-    public function actionAutocomplete($modelClass, $relation, $key, $label, $q, $id = null)
+    public function actionAutocomplete($modelClass, $relation, $key, $label, $q = null, $id = null)
     {
         if (!$id) {
             $model = ModelHelper::createModel($modelClass);
