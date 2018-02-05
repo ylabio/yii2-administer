@@ -59,6 +59,6 @@ class AutocompleteService implements AutocompleteServiceInterface
 
         return $query
             ->select([$keyAttribute, $labelAttribute])
-            ->andWhere(['like', $labelAttribute, $q]);
+            ->andFilterWhere(['like', $labelAttribute, $q]);
     }
 }
