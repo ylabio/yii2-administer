@@ -14,7 +14,8 @@ use ylab\administer\components\access\BaseAccessControl;
 use ylab\administer\relations\AutocompleteService;
 
 /**
- * @inheritdoc
+ * {@inheritdoc}
+ * @property UserDataInterface $userData
  */
 class Module extends \yii\base\Module
 {
@@ -35,30 +36,35 @@ class Module extends \yii\base\Module
      * ```
      */
     public $modelsConfig = [];
+
     /**
      * Url prefix for module actions.
      *
      * @var string
      */
     public $urlPrefix = 'admin';
+
     /**
      * Base url for uploads.
      *
      * @var string
      */
     public $uploadsUrl = '/uploads/';
+
     /**
      * Base path for uploads.
      *
      * @var string
      */
     public $uploadsPath = '@webroot' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+
     /**
      * Class that implements the [[UserDataInterface]].
      *
      * @var string|array
      */
     public $userDataClass;
+
     /**
      * @var array
      *
@@ -84,6 +90,7 @@ class Module extends \yii\base\Module
      * ```
      */
     public $menuConfig = [];
+
     /**
      * @var array
      *
@@ -99,11 +106,15 @@ class Module extends \yii\base\Module
      * ```
      */
     public $access = [];
+
     /**
      * @var BaseAccessControl
      */
     protected $accessControl;
 
+    /**
+     * @var UserDataInterface
+     */
     private $userData;
 
     /**
@@ -153,6 +164,7 @@ class Module extends \yii\base\Module
      * Get menu items for `Menu` widget.
      *
      * @return array
+     * @throws InvalidConfigException
      */
     public function getMenuItems()
     {
@@ -240,6 +252,7 @@ class Module extends \yii\base\Module
      * Get the implementation of the UserDataInterface.
      *
      * @return UserDataInterface|null
+     * @throws InvalidConfigException
      */
     public function getUserData()
     {
@@ -325,6 +338,7 @@ class Module extends \yii\base\Module
 
     /**
      * Configure url manager of application.
+     * @throws InvalidConfigException
      */
     protected function configureUrlManager()
     {
@@ -351,6 +365,7 @@ class Module extends \yii\base\Module
 
     /**
      * Configure of access control component.
+     * @throws InvalidConfigException
      */
     protected function configureAccessControl()
     {

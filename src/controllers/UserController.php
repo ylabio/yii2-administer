@@ -7,6 +7,7 @@ use Yii;
 
 /**
  * User controller.
+ * @property \ylab\administer\Module $module
  */
 class UserController extends Controller
 {
@@ -17,7 +18,7 @@ class UserController extends Controller
      */
     public function actionLogin()
     {
-        $this->layout = '@ylab/administer/views/login-layout';
+        $this->layout = 'login-layout';
 
         $model = $this->module->userData->getLoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
@@ -39,13 +40,5 @@ class UserController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getViewPath()
-    {
-        return Yii::getAlias('@ylab/administer/views');
     }
 }

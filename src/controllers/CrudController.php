@@ -24,7 +24,7 @@ class CrudController extends Controller
     /**
      * @inheritdoc
      */
-    public $layout = '@ylab/administer/views/layout';
+    public $layout = 'layout';
 
     /**
      * @inheritdoc
@@ -68,14 +68,6 @@ class CrudController extends Controller
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getViewPath()
-    {
-        return \Yii::getAlias('@ylab/administer/views');
-    }
-
-    /**
      * Show default module page.
      *
      * @return string
@@ -90,7 +82,7 @@ class CrudController extends Controller
      *
      * @param string $modelClass
      * @return string
-     * @throws InvalidConfigException
+     * @throws \yii\web\ForbiddenHttpException
      */
     public function actionIndex($modelClass)
     {
@@ -112,6 +104,7 @@ class CrudController extends Controller
      * @param int $id
      * @return string
      * @throws NotFoundHttpException
+     * @throws \yii\web\ForbiddenHttpException
      */
     public function actionView($modelClass, $id)
     {
@@ -137,6 +130,7 @@ class CrudController extends Controller
      *
      * @param string $modelClass
      * @return string|Response
+     * @throws \yii\web\ForbiddenHttpException
      */
     public function actionCreate($modelClass)
     {
@@ -167,6 +161,7 @@ class CrudController extends Controller
      * @param int $id
      * @return string|Response
      * @throws NotFoundHttpException
+     * @throws \yii\web\ForbiddenHttpException
      */
     public function actionUpdate($modelClass, $id)
     {
