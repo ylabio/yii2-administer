@@ -29,6 +29,14 @@ abstract class BaseField
     }
 
     /**
+     * @return ActiveField
+     */
+    public function getField()
+    {
+        return $this->field;
+    }
+
+    /**
      * Creation string representation of form field.
      * @param array $options
      * @return string
