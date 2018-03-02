@@ -43,7 +43,6 @@ class MultiSelectFilterInput extends OperatorFilterInput
         $modelClass = $this->modelClass;
         $params = ArrayHelper::getValue(\Yii::$app->request->getQueryParam($this->filterParam), $this->attribute);
         $options = ArrayHelper::merge(
-            $options,
             [
                 'name' => $this->getAttribute(),
                 'value' => ArrayHelper::map($modelClass::findAll($params), $key, $key),
@@ -61,7 +60,8 @@ class MultiSelectFilterInput extends OperatorFilterInput
                     ],
                     'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
                 ],
-            ]
+            ],
+            $options
         );
         $operatorHidden = (!empty($this->operator))
             ? Html::hiddenInput($this->operatorParam . '[' . $this->attribute . ']', $this->operator)
