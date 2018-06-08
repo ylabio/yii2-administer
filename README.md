@@ -10,7 +10,7 @@ php composer.phar require ylab/administer "*"
 ```
 or add
 ```json
-"ylab/yii2-administer": "*"
+"ylab/administer": "*"
 ```
 in the `require` section of `composer.json` file.
 
