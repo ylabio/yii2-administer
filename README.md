@@ -6,7 +6,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 
 Either run
 ```bash
-php composer.phar require ylab/yii2-administer "*"
+php composer.phar require ylab/administer "*"
 ```
 or add
 ```json
